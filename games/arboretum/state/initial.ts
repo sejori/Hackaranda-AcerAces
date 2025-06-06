@@ -20,9 +20,9 @@ export function getInitialGameState(): gameState {
     handA.push(deck.pop() as Card);
     handB.push(deck.pop() as Card);
   }
-  // for (let i = 0; i < 24; i++) {
-  //   deck.pop();
-  // }
+  for (let i = 0; i < 24; i++) {
+    deck.pop();
+  }
   return {
     deck,
     handA,

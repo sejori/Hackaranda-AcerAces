@@ -1,12 +1,5 @@
-import { cardString } from "../helpers/cardString.js";
-import {
-  subTurn,
-  type Card,
-  type coord,
-  type Deck,
-  type playArea,
-  type playerState,
-} from "../types.js";
+import { subTurn, type playerState } from "../types.js";
+import { niceDeck, nicePlayArea } from "../helpers/ui.js";
 
 export function displayForUser(state: playerState) {
   console.clear();
@@ -29,7 +22,7 @@ export function userMoveMessage(state: playerState) {
     case subTurn.Play:
       return state.turn < 2
         ? "Choose card to play in the centre"
-        : "Choose card to play, and where to place it (e.g. 'A1 C3 l')";
+        : "Choose card to play, and where to place it (e.g. 'A1 a(bove)/b(elow)/l(eft)/r(ight) C3')";
     case subTurn.Discard:
       return "Choose card to discard (e.g. 'A1')";
   }
@@ -41,66 +34,3 @@ const subTurnMap = [
   "Play card into area",
   "Discard",
 ];
-function niceDeck(deck: Deck) {
-  return deck.map((card) => cardString(card)).join(" ");
-}
-
-function nicePlayArea(playArea: playArea, padding = "") {
-  const cards: [Card, coord][] = [];
-  let maxX = 0;
-  let minX = 0;
-  let maxY = 0;
-  let minY = 0;
-  for (let xCoord of Object.keys(playArea)) {
-    const col = playArea[Number(xCoord)];
-    if (col === undefined) {
-      continue;
-    }
-
-    if (Number(xCoord) > maxX) {
-      maxX = Number(xCoord);
-    } else if (Number(xCoord) < minX) {
-      minX = Number(xCoord);
-    }
-
-    const yCoords = Object.keys(col);
-    for (let yCoord of yCoords) {
-      const card = col[Number(yCoord)];
-      if (card === undefined) {
-        continue;
-      }
-      if (Number(yCoord) > maxY) {
-        maxY = Number(yCoord);
-      } else if (Number(yCoord) < minY) {
-        minY = Number(yCoord);
-      }
-      cards.push([card, [Number(xCoord), Number(yCoord)]]);
-    }
-  }
-
-  let xLength = maxX - minX + 1;
-  let yLength = maxY - minY + 1;
-  const board = [];
-  for (let i = 0; i < xLength; i++) {
-    const row = [];
-    for (let j = 0; j < yLength; j++) {
-      row.push("  ");
-    }
-    board.push(row);
-  }
-  for (let [card, [x, y]] of cards) {
-    let row = board[x - minX];
-    if (row == undefined) {
-      continue;
-    }
-    row[y - minY] = cardString(card);
-  }
-
-  for (let i = (board[0]?.length ?? 0) - 1; i >= 0; i--) {
-    let row = " ";
-    for (let j = 0; j < board.length; j++) {
-      row += board[j]?.[i] + " ";
-    }
-    console.log(padding + row);
-  }
-}

@@ -32,9 +32,9 @@ function discardMoveTranslate(move: string) {
 }
 
 function playMoveTranslate(move: string, state: playerState): playMove {
-  const [selectedCard, locationCard, direction] = move.split(
+  const [selectedCard, direction, locationCard] = move.split(
     " ",
-  ) as unknown as [string, string, "l" | "r" | "a" | "b"];
+  ) as unknown as [string, "l" | "r" | "a" | "b", string];
   const card = cardArr(selectedCard);
   if (state.turn < 2) {
     return { card, coord: [0, 0] };

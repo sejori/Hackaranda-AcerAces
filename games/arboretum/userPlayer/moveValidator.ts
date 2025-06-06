@@ -63,10 +63,10 @@ function userPlayValidator(state: playerState) {
   return function (choice: userMove) {
     choice = choice as string;
     try {
-      const [sCard, lCard, direction] = choice.split(" ") as unknown as [
-        string,
+      const [sCard, direction, lCard] = choice.split(" ") as unknown as [
         string,
         "l" | "r" | "a" | "b",
+        string,
       ];
       const selectedCard = cardArr(sCard);
 

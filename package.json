@@ -9,13 +9,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/cli"
-    
   },
   "devDependencies": {
     "@types/node": "^22.15.18"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.3",
+    "chalk": "^5.4.1",
+    "cliui": "^9.0.1",
     "inquirer-file-selector": "^0.6.2",
     "inquirer-select-pro": "^1.0.0-alpha.9",
     "table": "^6.9.0"

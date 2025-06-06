@@ -1,6 +1,7 @@
 import type { identifier } from "../../../botHandler/index.js";
 import type { gameState, pathScore, winMetaData, path } from "../types.js";
 import type { winner } from "../../types.js";
+import { extractFromPlayArea, niceDeck, nicePlayArea } from "../helpers/ui.js";
 
 export function showScore(
   state: gameState,
@@ -19,28 +20,31 @@ export function showScore(
   }
   // console.log(state);
   console.log(botAIdentifier + ":");
-  console.log("    Final Hand:", displayPath(state.handA));
+  console.log("    Final Hand:", niceDeck(state.handA));
   console.log("    Final Score:", winner.metaData.aScore);
-  console.log("    Paths:");
-  for (let path of winner.metaData.aPaths) {
-    console.log("        Points:", path.score, displayPath(path.path));
+  const scoringAPaths = aPaths.filter((path) => path.score);
+  scoringAPaths
+    ? console.log("    Paths:")
+    : console.log("    No scoring paths");
+  for (let path of aPaths) {
+    console.log("        " + path.species + ":", path.score);
+    nicePlayArea(extractFromPlayArea(state.playAreaA, path.path), "        ");
   }
+  console.log("    Arboretum:");
+  nicePlayArea(state.playAreaA, "        ");
   console.log();
   console.log(botBIdentifier + ":");
-  console.log("    Final Hand:", displayPath(state.handB));
+  console.log("    Final Hand:", niceDeck(state.handB));
   console.log("    Final Score:", winner.metaData.bScore);
   console.log();
-  console.log("    Paths:");
-  for (let path of winner.metaData.bPaths) {
-    console.log("        Points:", path.score, displayPath(path.path));
+  const scoringBPaths = bPaths.filter((path) => path.score > 0);
+  scoringBPaths
+    ? console.log("    Paths:")
+    : console.log("    No scoring paths");
+  for (let path of scoringBPaths) {
+    console.log("        " + path.species + ":", path.score);
+    nicePlayArea(extractFromPlayArea(state.playAreaB, path.path), "        ");
   }
-}
-
-function displayPath(path: path) {
-  return path.map((card) => card[0] + card[1]).join(" ");
-}
-
-function getBestPath(pathscores: pathScore[]) {
-  pathscores.sort((a, b) => b.score - a.score);
-  return pathscores[0]?.path;
+  console.log("    Arboretum:");
+  nicePlayArea(state.playAreaB, "        ");
 }
