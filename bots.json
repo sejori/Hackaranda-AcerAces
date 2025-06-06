@@ -1,0 +1,30 @@
+[
+  {
+    "dockerId": "tictactoe-perfect-bot",
+    "identifier": "Perfect"
+  },
+  {
+    "dockerId": "tictactoe-firstmovecorner-bot",
+    "identifier": "FirstMoveCorner"
+  },
+  {
+    "dockerId": "tictactoe-firstmovemiddle-bot",
+    "identifier": "FirstMoveMiddle"
+  },
+  {
+    "dockerId": "tictactoe-firstmoveside-bot",
+    "identifier": "FirstMoveSide"
+  },
+  {
+    "dockerId": "tictactoe-randomunlesswinnable-bot",
+    "identifier": "Takes Win"
+  },
+  {
+    "dockerId": "tictactoe-randomunlesslosable-bot",
+    "identifier": "Avoids Loss"
+  },
+  {
+    "dockerId": "tictactoe-randomunlesswinorloss-bot",
+    "identifier": "Takes Ws Avoids Ls"
+  }
+]

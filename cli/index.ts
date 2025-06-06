@@ -1,0 +1,43 @@
+import { select } from "@inquirer/prompts";
+import { beginTournament } from "./beginTournament/index.js";
+
+async function go() {
+  console.clear();
+  welcomeMessage();
+  const toplevelChoice = await select({
+    message: "Choose an option",
+    choices: toplevelOptions,
+  });
+  await toplevelChoice();
+}
+
+type Choice<Value> = {
+  value: Value;
+  name?: string;
+  description?: string;
+  short?: string;
+  disabled?: boolean | string;
+  type?: never;
+};
+
+const toplevelOptions: Choice<() => Promise<void>>[] = [
+  {
+    value: beginTournament,
+    name: "Begin Tournament",
+  },
+];
+
+function welcomeMessage() {
+  console.log("Welcome");
+}
+
+go();
+
+process.on("uncaughtException", (error) => {
+  if (error instanceof Error && error.name === "ExitPromptError") {
+    console.log("👋 until next time!");
+  } else {
+    // Rethrow unknown errors
+    throw error;
+  }
+});
