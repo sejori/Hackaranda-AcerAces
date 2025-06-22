@@ -63,5 +63,9 @@
 	{
 		"dockerId": "arboretum-draw-most-common-bot",
 		"identifier": "Draw Most Common"
+	},
+	{
+		"dockerId": "arboretum-random-python",
+		"identifier": "Random (python)"
 	}
 ]
