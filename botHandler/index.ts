@@ -43,7 +43,7 @@ export class BotProcess {
   send(gameState: any) {
     return new Promise((resolve: resolver) => {
       const message = wrapState(gameState);
-      console.log(message);
+      // console.log(message);
       this.messageMap.set(message.messageID, resolve);
       this.timeOutMessage(message.messageID, this.timeout);
       this.proc.stdin.write(JSON.stringify(message) + "\n");
@@ -81,7 +81,7 @@ export class BotProcess {
   dataHandler = (line: string) => {
     try {
       const parsed = JSON.parse(line.trim());
-      console.log("received from", this.identifier, parsed);
+      // console.log("received from", this.identifier, parsed);
       this.resolvePromise(parsed);
     } catch (error) {
       console.error(error, line);

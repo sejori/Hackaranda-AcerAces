@@ -67,5 +67,9 @@
 	{
 		"dockerId": "arboretum-random-python",
 		"identifier": "Random (python)"
+	},
+	{
+		"dockerId": "arboretum-random-csharp",
+		"identifier": "Random (csharp)"
 	}
 ]

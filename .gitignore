@@ -22,6 +22,9 @@ tournamentResults/*
 # Visual Studio Code configuration
 .vscode/
 
+bin/
+obj/
+
 
 # npm and yarn debug logs
 npm-debug.log*
