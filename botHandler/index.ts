@@ -8,21 +8,24 @@ type resolver = (value: unknown) => void;
 export class BotProcess {
   private proc;
   private rl;
-  private queue: resolver[] = [];
   private messageMap = new Map<UUID, resolver>();
 
   constructor(
     public imageName: string,
     public identifier: string,
     private timeout: number,
+    private variables?: string[],
   ) {
-    this.proc = spawn("docker", [
-      "run",
-      "--rm",
-      "--network=none",
-      "-i",
-      imageName,
-    ]);
+    // TODO: Have a 'ready' message
+    const envVariables = [];
+    if (variables !== undefined && variables.length > 0) {
+      for (let variable of variables) {
+        envVariables.push("-e");
+        envVariables.push(variable);
+      }
+    }
+    const dockerVars = ["run", ...envVariables, "--rm", "-i", imageName];
+    this.proc = spawn("docker", dockerVars);
 
     this.rl = readline.createInterface({
       input: this.proc.stdout,
@@ -30,7 +33,7 @@ export class BotProcess {
 
     this.rl.on("line", this.dataHandler);
 
-    this.proc.stderr.on("data", errorHandler(imageName));
+    this.proc.stderr.on("data", errorHandler(identifier));
 
     this.proc.on("close", closeHandler(imageName));
 
@@ -39,8 +42,8 @@ export class BotProcess {
 
   send(gameState: any) {
     return new Promise((resolve: resolver) => {
-      this.queue.push(resolve);
       const message = wrapState(gameState);
+      // console.log(message);
       this.messageMap.set(message.messageID, resolve);
       this.timeOutMessage(message.messageID, this.timeout);
       this.proc.stdin.write(JSON.stringify(message) + "\n");
@@ -78,6 +81,7 @@ export class BotProcess {
   dataHandler = (line: string) => {
     try {
       const parsed = JSON.parse(line.trim());
+      // console.log("received from", this.identifier, parsed);
       this.resolvePromise(parsed);
     } catch (error) {
       console.error(error, line);
@@ -87,7 +91,7 @@ export class BotProcess {
 
 function errorHandler(imageName: string) {
   return (err: Error) => {
-    console.error(`stderr from ${imageName}:`, err.toString());
+    console.error(`${imageName}:`, err.toString());
   };
 }
 

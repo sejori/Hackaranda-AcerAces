@@ -1,13 +1,11 @@
+import { cardString } from "../helpers/cardString.js";
 import {
   type Deck,
   type gameState,
   species,
-  type rank,
   type Card,
-  type Hand,
   type Discard,
   type playArea,
-  drawingMove,
   subTurn,
   ranks,
 } from "../types.js";
@@ -20,9 +18,12 @@ export function getInitialGameState(): gameState {
     handA.push(deck.pop() as Card);
     handB.push(deck.pop() as Card);
   }
-  for (let i = 0; i < 24; i++) {
-    deck.pop();
-  }
+  // for (let i = 0; i < 20; i++) {
+  //   deck.pop();
+  // }
+  const seenA = new Set(...handA.map((card) => cardString(card)));
+  const seenB = new Set(...handB.map((card) => cardString(card)));
+
   return {
     deck,
     handA,
@@ -31,10 +32,14 @@ export function getInitialGameState(): gameState {
     discardB: [] as Discard,
     playAreaA: {} as playArea,
     playAreaB: {} as playArea,
+    seenA,
+    seenB,
     turn: 0,
     subTurn: subTurn.FirstDraw,
     currentPlayer: 0,
     opponent: "",
+    previousTurn: false,
+    previousTurnMetaData: false,
   };
 }
 

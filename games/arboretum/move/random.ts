@@ -5,12 +5,12 @@ import {
   type Card,
   type coord,
   type Hand,
+  type move,
   type playArea,
   type playerState,
-  type playMove,
 } from "../types.js";
 
-export function getRandomMove(state: playerState) {
+export function getRandomMove(state: playerState<move>) {
   switch (state.subTurn) {
     case subTurn.FirstDraw:
     case subTurn.SecondDraw:
@@ -22,7 +22,7 @@ export function getRandomMove(state: playerState) {
   }
 }
 
-function randomDrawMove(state: playerState) {
+function randomDrawMove(state: playerState<move>) {
   const options: drawingMove[] = [];
   if (state.deck > 0) {
     options.push(drawingMove.Deck);
@@ -38,19 +38,22 @@ function randomDrawMove(state: playerState) {
   return options[randomIndex] as drawingMove;
 }
 
-function randomPlayMove(state: playerState): playMove {
+export function randomPlayMove(state: playerState<move>) {
   const card = pickRandomCardFromHand(state.hand);
-  const coord = getRandomEmptySpace(state.playArea);
+  const coord = pickRandomCardFromHand(
+    getAllEmptySpaces(state.playArea),
+  ) as unknown as coord;
   return { card, coord };
 }
 
-function getRandomEmptySpace(playArea: playArea): coord {
+function getAllEmptySpaces(playArea: playArea) {
   const toView: coord[] = [[0, 0]];
   const visitedCards = new Set<string>();
+  const emptySpaces: coord[] = [];
   while (toView.length) {
     const [x, y] = toView.pop() as coord;
     let card = playArea[x]?.[y];
-    if (card === undefined) return [x, y];
+    if (card === undefined) return [[x, y]] as coord[];
     visitedCards.add(cardString(card));
 
     let coordOptions: coord[] = [
@@ -62,7 +65,8 @@ function getRandomEmptySpace(playArea: playArea): coord {
     for (let [x, y] of coordOptions) {
       const card = playArea[x]?.[y];
       if (card === undefined) {
-        return [x, y];
+        emptySpaces.push([x, y]);
+        continue;
       }
       if (visitedCards.has(cardString(card))) {
         continue;
@@ -70,14 +74,14 @@ function getRandomEmptySpace(playArea: playArea): coord {
       toView.push([x, y]);
     }
   }
-  return [0, 0];
+  return emptySpaces;
 }
 
-function pickRandomCardFromHand(hand: Hand) {
+function pickRandomCardFromHand(hand: Hand | coord[]) {
   const randomIndex = Math.floor(Math.random() * hand.length);
   return hand[randomIndex] as Card;
 }
 
-function randomDiscardMove(state: playerState) {
+function randomDiscardMove(state: playerState<move>) {
   return pickRandomCardFromHand(state.hand);
 }

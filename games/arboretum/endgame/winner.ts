@@ -38,6 +38,7 @@ export function getWinner(state: gameState): winner<winMetaData> {
           path: bestPaths[0] || [],
           score,
           species: aSpecies,
+          scored: true,
         });
       } else {
         playerBScore += score;
@@ -45,6 +46,7 @@ export function getWinner(state: gameState): winner<winMetaData> {
           path: bestPaths[0] || [],
           score,
           species: aSpecies,
+          scored: true,
         });
       }
     }
@@ -54,7 +56,7 @@ export function getWinner(state: gameState): winner<winMetaData> {
   let result: 0 | 1 | 2 = 2;
   if (playerAScore > playerBScore) {
     result = 0;
-  } else if (playerBScore < playerAScore) {
+  } else if (playerBScore > playerAScore) {
     result = 1;
   }
   const res = {
@@ -65,6 +67,8 @@ export function getWinner(state: gameState): winner<winMetaData> {
       bScore: playerBScore,
       bPaths: playerBPaths,
     },
+    scoreA: playerAScore,
+    scoreB: playerBScore,
   };
   return res;
 }

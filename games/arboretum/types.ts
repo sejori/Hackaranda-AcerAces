@@ -9,6 +9,7 @@ export type Card = [species, rank];
 export type Deck = Card[];
 export type path = Card[];
 export type Hand = Deck;
+export type opponentHand = (Card | null)[];
 export type Discard = Deck;
 
 /**
@@ -25,6 +26,8 @@ export enum subTurn {
   Discard,
 }
 
+export type seen = Set<string>;
+
 export type gameState = {
   /** Game deck and draw pile */
   deck: Deck;
@@ -40,6 +43,10 @@ export type gameState = {
   playAreaA: playArea;
   /** Player B's playArea */
   playAreaB: playArea;
+  /** Player A's seen cards */
+  seenA: seen;
+  /** Player B's seen cards */
+  seenB: seen;
   /** Current turn number */
   turn: turn;
   /** Current sub turn */
@@ -47,13 +54,17 @@ export type gameState = {
   /** Current player */
   currentPlayer: number;
   opponent: string;
+  previousTurn: false | move;
+  previousTurnMetaData: false | Card;
 };
 
-export type playerState = {
+export type playerState<move> = {
   /** Cards remaining in deck */
   deck: number;
   /** Player's hand */
   hand: Hand;
+  /** Opponent's hand */
+  opponentHand: opponentHand;
   /** Player's Discard Pile */
   discard: Discard;
   /** Opponent's Discard Pile*/
@@ -68,6 +79,8 @@ export type playerState = {
   subTurn: subTurn;
   /** Is player active */
   activeTurn: boolean;
+  previousTurn: { move: move | false; metaData: Card | false };
+  showPreviousTurn: boolean;
 };
 
 export enum drawingMove {
@@ -87,7 +100,12 @@ export type move = drawingMove | playMove | discardMove;
 
 export type userMove = Card | string | drawingMove;
 
-export type pathScore = { path: path; score: number; species: species };
+export type pathScore = {
+  path: path;
+  score: number;
+  species: species;
+  scored: boolean;
+};
 export type winMetaData = {
   aScore: number;
   aPaths: pathScore[];

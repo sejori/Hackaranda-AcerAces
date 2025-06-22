@@ -2,11 +2,12 @@ import { playBestOf, type bestOfResults } from "../../bestOf/index.js";
 import { BotProcess, type identifier } from "../../botHandler/index.js";
 import type { gameTitle } from "../../games/index.js";
 import { table as printTable } from "table";
-import { PlayerProcess } from "../../playerHandler/index.js";
-export type botDetail = {
-  dockerId: string;
-  identifier: identifier;
-};
+import { botsFromBotDetail } from "../index.js";
+import { writeFile } from "fs/promises";
+import cliui from "cliui";
+import readline from "readline";
+import type { botDetail } from "../types.js";
+const ui = cliui();
 
 type table = Record<identifier, record>;
 type record = {
@@ -19,39 +20,47 @@ type record = {
   gDraws: number;
   gLosses: number;
   points: number;
+  timeouts: number;
+  scoreFor: number;
+  scoreAgainst: number;
 };
 export async function roundRobin(
   botDetails: botDetail[],
   gameTitle: gameTitle,
+  tournamentName: string,
   bestOf: number,
   moveTimeout = 100,
   alternatePlayer1 = true,
   log = false,
   tableLog = false,
 ) {
-  let bots: Record<string, BotProcess> = {};
-  let identifiers = [];
-  for (let botDetail of botDetails) {
-    identifiers.push(botDetail.identifier);
-    if (botDetail.dockerId === "player") {
-      bots[botDetail.identifier] = new PlayerProcess(
-        botDetail.dockerId,
-        botDetail.identifier,
-        gameTitle,
-      ) as unknown as BotProcess;
-      continue;
-    }
-    bots[botDetail.identifier] = new BotProcess(
-      botDetail.dockerId,
-      botDetail.identifier,
-      moveTimeout,
-    );
-  }
+  let maxHeapUsage = 0;
+  let [bots, identifiers] = botsFromBotDetail(
+    botDetails,
+    gameTitle,
+    moveTimeout,
+  );
   let table = generateTable(identifiers);
   let rounds = roundRobinMatchups(identifiers.length);
   for (let i = 0; i < rounds.length; i++) {
-    console.log(`----- Round ${i + 1} -----`);
-    const roundStartTime = Date.now();
+    ui.resetOutput();
+    ui.div({ text: `----- Round ${i + 1} -----` });
+    ui.div(
+      {
+        text:
+          showTable(table, identifiers, false, "Interim Table", 10) ??
+          "table failed",
+        options: {},
+      },
+      { text: "Other stuff" },
+    );
+    // tableLog && console.log(ui.toString());
+    // Clear previous line(s) and overwrite
+    if (tableLog) {
+      readline.cursorTo(process.stdout, 0, 0);
+      readline.clearScreenDown(process.stdout);
+      process.stdout.write(ui.toString());
+    }
     let round = rounds[i] as number[][];
     let resolvers: Promise<unknown>[] = [];
     for (let j = 0; j < round.length; j++) {
@@ -74,6 +83,7 @@ export async function roundRobin(
             i * round.length + j,
             gameTitle,
             bestOf,
+            `Round ${i + 1}`,
             alternatePlayer1,
             log,
           ),
@@ -83,10 +93,11 @@ export async function roundRobin(
       );
     }
     await Promise.all(resolvers);
-    const roundEndTime = Date.now();
-    console.log((roundEndTime - roundStartTime) / 1000, "seconds");
   }
-  showTable(table, identifiers);
+  console.clear();
+  console.log(showTable(table, identifiers));
+  await saveResults(table, identifiers, tournamentName);
+  console.log("Max heap usage", maxHeapUsage);
   return;
 }
 function generateTable(identifiers: identifier[]) {
@@ -102,6 +113,9 @@ function generateTable(identifiers: identifier[]) {
       gLosses: 0,
       rounds: 0,
       points: 0,
+      timeouts: 0,
+      scoreFor: 0,
+      scoreAgainst: 0,
     };
   }
   return table;
@@ -114,17 +128,23 @@ async function updateTable(
   table: table,
   log = false,
 ) {
-  let results = await match;
+  let { results, timeouts, scores } = await match;
   let aResults = results[botAIdentifier] as unknown as number;
   let bResults = results[botBIdentifier] as unknown as number;
   let draws = results.draws as number;
   const games = aResults + bResults + draws;
   let aTable = table[botAIdentifier] as unknown as record;
   let bTable = table[botBIdentifier] as unknown as record;
-  log &&
+  false &&
     console.log(
-      `${botAIdentifier} ${aResults} - (draws ${draws}) ${bResults} ${botBIdentifier}`,
+      `${botAIdentifier} ${aResults} (${scores[botAIdentifier]}) - (draws ${draws}) - (${scores[botBIdentifier]}) ${bResults} ${botBIdentifier}`,
     );
+  aTable.timeouts += timeouts[botAIdentifier] ?? 0;
+  bTable.timeouts += timeouts[botBIdentifier] ?? 0;
+  aTable.scoreFor += scores[botAIdentifier] ?? 0;
+  bTable.scoreFor += scores[botBIdentifier] ?? 0;
+  aTable.scoreAgainst += scores[botBIdentifier] ?? 0;
+  bTable.scoreAgainst += scores[botAIdentifier] ?? 0;
   if (aResults > bResults) {
     aTable.rWins++;
     bTable.rLosses++;
@@ -182,7 +202,13 @@ function rotateArray(list: number[]) {
   list.unshift(first);
 }
 
-function showTable(table: table, identifiers: identifier[]) {
+function showTable(
+  table: table,
+  identifiers: identifier[],
+  full = true,
+  title = "Final Table",
+  limit: false | number = false,
+) {
   let rows = [];
   for (let identifier of identifiers) {
     let record = table[identifier];
@@ -202,44 +228,88 @@ function showTable(table: table, identifiers: identifier[]) {
     return recordDifference;
   });
 
-  console.log("----- Final Table -----");
-  let finalTable = [
-    [
-      "Player",
-      "Rounds",
-      "Rounds Wins",
-      "Round Draws",
-      "Round Losses",
+  let headers = [
+    "Player",
+    "Rounds",
+    "Rounds Wins",
+    "Round Draws",
+    "Round Losses",
+  ];
+  full &&
+    headers.push(
       "Sets",
       "Set Wins",
       "Set Draws",
       "Set Losses",
       "Set Diff",
-      "Points",
-    ],
-  ];
-  for (let i = 0; i < rows.length; i++) {
+      "Timeouts",
+      "Avg. Score For",
+      "Avg. Score Against",
+    );
+  headers.push("Points");
+  let finalTable = [headers];
+  let rowCount = limit === false ? rows.length : Math.min(limit, rows.length);
+  for (let i = 0; i < rowCount; i++) {
     const row = rows[i];
     if (row == undefined) {
       return;
     }
-    finalTable.push([
+    let newRow = [
       `${i + 1}. ${row.identifier}`,
       `${row.record.rounds}`,
       `${row.record.rWins}`,
       `${row.record.rDraws}`,
       `${row.record.rLosses}`,
-      `${row.record.games}`,
-      `${row.record.gWins}`,
-      `${row.record.gDraws}`,
-      `${row.record.gLosses}`,
-      `${row.record.gWins - row.record.gLosses}`,
-      `${row.record.points}`,
-    ]);
+    ];
+    full &&
+      newRow.push(
+        `${row.record.games}`,
+        `${row.record.gWins}`,
+        `${row.record.gDraws}`,
+        `${row.record.gLosses}`,
+        `${row.record.gWins - row.record.gLosses}`,
+        `${row.record.timeouts}`,
+        `${(row.record.scoreFor / row.record.games).toFixed(1)}`,
+        `${(row.record.scoreAgainst / row.record.games).toFixed(1)}`,
+      );
+    newRow.push(`${row.record.points}`);
+    finalTable.push(newRow);
   }
-  console.log(
-    printTable(finalTable, {
-      header: { alignment: "center", content: "Final Table" },
-    }),
-  );
+  return printTable(finalTable, {
+    header: { alignment: "center", content: title },
+  });
+}
+
+async function saveResults(
+  table: table,
+  identifiers: identifier[],
+  tournamentName: string,
+) {
+  let rows = [];
+  for (let identifier of identifiers) {
+    let record = table[identifier];
+    if (record == undefined) {
+      return;
+    }
+    rows.push({ identifier, record, rank: 0 });
+  }
+  rows.sort((rowa, rowb) => {
+    const pointsDifference = rowb.record.points - rowa.record.points;
+    if (pointsDifference !== 0) return pointsDifference;
+    const recordDifference =
+      rowb.record.gWins -
+      rowb.record.gLosses -
+      rowa.record.gWins +
+      rowa.record.gLosses;
+    return recordDifference;
+  });
+  for (let i = 0; i < rows.length; i++) {
+    let row = rows[i];
+    if (row === undefined) {
+      continue;
+    }
+    row.rank = i + 1;
+  }
+  const jsonRows = JSON.stringify(rows);
+  await writeFile("./tournamentResults/" + tournamentName + ".json", jsonRows);
 }

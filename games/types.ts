@@ -1,6 +1,6 @@
 import type { UUID } from "node:crypto";
-import type { botDetail } from "../tournaments/roundRobin/index.js";
 import type { identifier } from "../botHandler/index.js";
+import type { botDetail } from "../tournaments/types.js";
 
 /** player */
 export type player = {
@@ -41,8 +41,10 @@ export type gameState = {
   opponent: string;
 };
 
-export type playerState = {
+export type playerState<S> = {
   activeTurn: boolean;
+  previousTurn: { move: S | false; metaData?: any };
+  showPreviousTurn: boolean;
 };
 
 export type request<S> = {
@@ -57,13 +59,16 @@ export type response<S> = {
 export type winner<S> = {
   result: 0 | 1 | 2;
   metaData: S;
+  scoreA: number;
+  scoreB: number;
 };
 
 export type gameInterface<
   S extends gameState,
+  internalState,
   userMove,
   move,
-  T extends playerState,
+  T extends playerState<move>,
   Q,
 > = {
   /**
@@ -102,9 +107,27 @@ export type gameInterface<
   /**
    * newGameMessage
    */
-  newGameMessage: (gameNumber: number) => {
+  newGameMessage: (
+    gameNumber: number,
+    round: string,
+  ) => {
     gameNumber: number;
-    message: string;
+    round: string;
+    message: "NEWGAME";
+  };
+  /**
+   * postGameMessage
+   */
+  postGameMessage: (
+    result: 0 | 1 | 2,
+    scores: [number, number],
+    finalState: internalState,
+  ) => {
+    message: "ENDGAME";
+    result: 0 | 1 | 2;
+    score: number;
+    opponentScore: number;
+    finalState: internalState;
   };
   /**
    * Return 0 for draw, 1 for active player win, 2 for inactive player win
@@ -114,7 +137,20 @@ export type gameInterface<
   /**
    * Print current state in a human friendly way
    */
-  displayForUser: (gameState: T, identifier: string) => void;
+  displayForUser: (
+    gameState: T,
+    identifier: string,
+    gameNumber: number,
+    round: string,
+  ) => void;
+  /**
+   * Show previousTurn and wait for user confirmation
+   */
+  showPreviousTurn: (
+    gameState: T,
+    gameNumber: number,
+    round: string,
+  ) => Promise<void>;
   /**
    * Print message to prompt user for current move
    */

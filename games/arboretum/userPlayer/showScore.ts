@@ -26,12 +26,14 @@ export function showScore(
   scoringAPaths
     ? console.log("    Paths:")
     : console.log("    No scoring paths");
-  for (let path of aPaths) {
+  for (let path of scoringAPaths) {
     console.log("        " + path.species + ":", path.score);
-    nicePlayArea(extractFromPlayArea(state.playAreaA, path.path), "        ");
+    console.log(
+      nicePlayArea(extractFromPlayArea(state.playAreaA, path.path), ""),
+    );
   }
   console.log("    Arboretum:");
-  nicePlayArea(state.playAreaA, "        ");
+  console.log(nicePlayArea(state.playAreaA, "", true));
   console.log();
   console.log(botBIdentifier + ":");
   console.log("    Final Hand:", niceDeck(state.handB));
@@ -43,8 +45,10 @@ export function showScore(
     : console.log("    No scoring paths");
   for (let path of scoringBPaths) {
     console.log("        " + path.species + ":", path.score);
-    nicePlayArea(extractFromPlayArea(state.playAreaB, path.path), "        ");
+    console.log(
+      nicePlayArea(extractFromPlayArea(state.playAreaB, path.path), ""),
+    );
   }
   console.log("    Arboretum:");
-  nicePlayArea(state.playAreaB, "        ");
+  console.log(nicePlayArea(state.playAreaB, "", true));
 }

@@ -17,16 +17,35 @@ import type {
   userMove,
   winMetaData,
 } from "./types.js";
-import { displayForUser, userMoveMessage } from "./userPlayer/display.js";
+import {
+  displayForUser,
+  showPreviousTurn,
+  userMoveMessage,
+} from "./userPlayer/display.js";
 import { userMoveTranslate } from "./userPlayer/moveTranslator.js";
 import { playerMoveValidator } from "./userPlayer/moveValidator.js";
 import { showScore } from "./userPlayer/showScore.js";
 
+function postGameMessage(
+  result: 0 | 1 | 2,
+  scores: [number, number],
+  finalState: gameState,
+) {
+  return {
+    message: "ENDGAME" as "ENDGAME",
+    result,
+    score: scores[0],
+    opponentScore: scores[1],
+    finalState,
+  };
+}
+
 export const arboretum: gameInterface<
+  gameState,
   gameState,
   userMove,
   move,
-  playerState,
+  playerState<move>,
   winMetaData
 > = {
   getInitialGameState,
@@ -39,12 +58,14 @@ export const arboretum: gameInterface<
   applyMove,
   getRandomMove,
   displayForUser,
+  showPreviousTurn,
   userMoveMessage,
   userMoveTranslate,
   playerMoveValidator,
   defaultBotDetail,
-  newGameMessage: (gameNumber: number) => {
-    return { message: "NEWGAME", gameNumber };
+  postGameMessage,
+  newGameMessage: (gameNumber: number, round: string) => {
+    return { message: "NEWGAME", gameNumber, round };
   },
   showScore,
 };

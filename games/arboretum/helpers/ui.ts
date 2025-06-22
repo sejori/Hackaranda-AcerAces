@@ -1,20 +1,69 @@
 import chalk from "chalk";
-import type { Card, coord, Deck, playArea, species } from "../types.js";
+import type {
+  Card,
+  coord,
+  Deck,
+  opponentHand,
+  playArea,
+  species,
+} from "../types.js";
 import { cardString } from "./cardString.js";
+import { getBorderCharacters, table } from "table";
 
-export function niceDeck(deck: Deck, joiner = " ") {
-  return deck.map((card) => assignColour(cardString(card))).join(joiner);
+export function niceDeck(
+  deck: Deck,
+  joiner = " ",
+  underline: false | "first" | "last" = false,
+  reverse = false,
+) {
+  let newDeck = deck.map((card, index) => {
+    let newCard = assignColour(cardString(card));
+    if (underline === "last" && index == deck.length - 1) {
+      newCard = chalk.underline(newCard);
+    }
+    if (underline === "first" && index == deck.length - 1) {
+      newCard = chalk.underline(newCard);
+    }
+    return newCard;
+  });
+  if (reverse) {
+    newDeck = newDeck.reverse();
+  }
+  return newDeck.join(joiner);
 }
 
+export function sortDeck(deck: Deck) {
+  const newDeck = [...deck];
+  newDeck.sort((a, b) => {
+    const speciesDifference = b[0].charCodeAt(0) - a[0].charCodeAt(0);
+    if (speciesDifference !== 0) {
+      return speciesDifference;
+    }
+    return a[1] - b[1];
+  });
+  return newDeck;
+}
+
+export function fancyDeck(deck: Deck | opponentHand, joiner = " ") {
+  let newDeck = deck.map((card) =>
+    card === null ? niceUnknownCard() : niceCard(card),
+  );
+  return table([newDeck], { border: getBorderCharacters("void") });
+}
+
+const colourMap: Record<species, string> = {
+  C: "#FFFF00",
+  J: "#800080",
+  R: "#FFA500",
+  M: "#FF0000",
+  O: "8B4513",
+  W: "006400",
+};
+export function colorForSpecies(species: species) {
+  const hexColour = colourMap[species as species];
+  return chalk.hex(hexColour ?? "#FFFFFF");
+}
 export function assignColour(card: string) {
-  const colourMap: Record<species, string> = {
-    C: "#FFFF00",
-    J: "#800080",
-    R: "#FFA500",
-    M: "#FF0000",
-    O: "8B4513",
-    W: "006400",
-  };
   const species = card[0];
   if (species === undefined) {
     return "";
@@ -50,12 +99,57 @@ export function extractFromPlayArea(playArea: playArea, cards: Card[]) {
   return newPlayArea;
 }
 
-export function nicePlayArea(playArea: playArea, padding = "") {
+export function nicePlayArea(
+  playArea: playArea,
+  padding = "",
+  isNiceCard = false,
+) {
+  const out = nicePlayAreaArr(playArea, isNiceCard, padding);
+  if (out.length === 0) {
+    return "";
+  }
+  const borderCharacters = {
+    topBody: "",
+    topJoin: "",
+    topLeft: "",
+    topRight: "",
+
+    bottomBody: "",
+    bottomJoin: "",
+    bottomLeft: "",
+    bottomRight: "",
+
+    bodyLeft: "│",
+    bodyRight: "",
+    bodyJoin: "",
+    headerJoin: "",
+
+    joinBody: "",
+    joinLeft: "",
+    joinRight: "",
+    joinJoin: "",
+    joinMiddleDown: "",
+    joinMiddleUp: "",
+    joinMiddleLeft: "",
+    joinMiddleRight: "",
+  };
+  return table(out, {
+    border: getBorderCharacters("norc"),
+    drawHorizontalLine: (i, l) => i === 0 || i === l,
+    drawVerticalLine: (i, l) => i === 0 || i === l,
+  });
+}
+
+export function nicePlayAreaArr(
+  playArea: playArea,
+  isNiceCard = false,
+  padding = "",
+) {
   const cards: [Card, coord][] = [];
-  let maxX = 0;
-  let minX = 0;
-  let maxY = 0;
-  let minY = 0;
+  let maxX = -Infinity;
+  let minX = Infinity;
+  let maxY = -Infinity;
+  let minY = Infinity;
   for (let xCoord of Object.keys(playArea)) {
     const col = playArea[Number(xCoord)];
     if (col === undefined) {
@@ -64,7 +158,8 @@ export function nicePlayArea(playArea: playArea, padding = "") {
 
     if (Number(xCoord) > maxX) {
       maxX = Number(xCoord);
-    } else if (Number(xCoord) < minX) {
+    }
+    if (Number(xCoord) < minX) {
       minX = Number(xCoord);
     }
 
@@ -76,7 +171,8 @@ export function nicePlayArea(playArea: playArea, padding = "") {
       }
       if (Number(yCoord) > maxY) {
         maxY = Number(yCoord);
-      } else if (Number(yCoord) < minY) {
+      }
+      if (Number(yCoord) < minY) {
         minY = Number(yCoord);
       }
       cards.push([card, [Number(xCoord), Number(yCoord)]]);
@@ -98,14 +194,64 @@ export function nicePlayArea(playArea: playArea, padding = "") {
     if (row == undefined) {
       continue;
     }
-    row[y - minY] = assignColour(cardString(card));
+    row[y - minY] = isNiceCard
+      ? niceCard(card)
+      : assignColour(cardString(card));
   }
 
+  let out = [];
   for (let i = (board[0]?.length ?? 0) - 1; i >= 0; i--) {
-    let row = " ";
+    let row = [];
     for (let j = 0; j < board.length; j++) {
-      row += board[j]?.[i] + " ";
+      row.push(board[j]?.[i]);
     }
-    console.log(padding + row);
+    if (padding !== "") {
+      out.push([padding, ...row]);
+    } else {
+      out.push(row);
+    }
   }
+  return out;
+}
+
+function niceCard(card: Card) {
+  const colour = colorForSpecies(card[0]);
+  const species = colour(card[0]);
+  const rank = colour(card[1]);
+  // const data = [
+  //   [rank, " ", rank],
+  //   [" ", " ", " "],
+  //   [" ", species + rank, " "],
+  //   [" ", " ", " "],
+  //   [rank, " ", rank],
+  // ];
+  const data = [
+    [`${rank}  ${rank}`],
+    [`${species}${rank}`],
+    [`${rank}  ${rank}`],
+  ];
+  let out = table(data, {
+    columnDefault: {
+      alignment: "center",
+      verticalAlignment: "middle",
+    },
+    drawHorizontalLine: (index, le) => index == 0 || index == le,
+    drawVerticalLine: (index, le) => index == 0 || index == le,
+  });
+  return out.slice(0, out.length - 1);
+}
+function niceUnknownCard() {
+  // const data = [
+  //   ["/", "/", "/"],
+  //   ["/", "/", "/"],
+  //   ["/", "/", "/"],
+  //   ["/", "/", "/"],
+  //   ["/", "/", "/"],
+  // ];
+  const data = [[`////`], [`////`], [`////`]];
+  let out = table(data, {
+    drawHorizontalLine: (index, le) => index == 0 || index == le,
+    drawVerticalLine: (index, le) => index == 0 || index == le,
+  });
+  return out.slice(0, out.length - 1);
 }

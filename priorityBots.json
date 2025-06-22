@@ -1,0 +1,66 @@
+[
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "12345678",
+    "variables": ["priority=12345678"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "12345687",
+    "variables": ["priority=12345687"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "12345867",
+    "variables": ["priority=12345867"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "21345678",
+    "variables": ["priority=21345678"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "21345687",
+    "variables": ["priority=21345687"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "21345867",
+    "variables": ["priority=21345867"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "23145678",
+    "variables": ["priority=23145678"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "23145687",
+    "variables": ["priority=23145687"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "23145867",
+    "variables": ["priority=23145867"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "23415678",
+    "variables": ["priority=23145678"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "23415687",
+    "variables": ["priority=23145687"]
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "23415867",
+    "variables": ["priority=23145867"]
+	},
+	{
+		"dockerId": "arboretum-discard-lowest-bot",
+		"identifier": "Discard Lowest"
+	}
+]

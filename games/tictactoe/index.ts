@@ -1,6 +1,6 @@
-import type { UUID } from "crypto";
 import type { gameInterface, winner } from "../types.js";
 import type { identifier } from "../../botHandler/index.js";
+import { confirm } from "@inquirer/prompts";
 
 type tile = "-" | "O" | "X";
 type gameState = {
@@ -8,14 +8,17 @@ type gameState = {
   currentPlayer: number;
   state: board;
   opponent: string;
+  previousTurn: false | number;
 };
 type board = [tile, tile, tile, tile, tile, tile, tile, tile, tile];
 type move = number;
-type playerState = {
+type playerState<T> = {
   token: tile;
   gameState: board;
   activeTurn: boolean;
   opponent: string;
+  previousTurn: { move: T | false };
+  showPreviousTurn: boolean;
 };
 
 function getInitialGameState(): gameState {
@@ -24,6 +27,7 @@ function getInitialGameState(): gameState {
     currentPlayer: 0,
     state: ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
     opponent: "",
+    previousTurn: false,
   };
 }
 
@@ -57,6 +61,7 @@ function applyMove(gameState: gameState, move: move) {
   gameState.state[move] = token;
   gameState.turn += 1;
   gameState.currentPlayer = gameState.currentPlayer == 0 ? 1 : 0;
+  gameState.previousTurn = move;
   return gameState;
 }
 
@@ -64,18 +69,21 @@ function getToken(gameState: gameState) {
   return gameState.turn % 2 ? "X" : "O";
 }
 
-function getActivePlayerState(gameState: gameState): playerState {
+function getActivePlayerState(gameState: gameState): playerState<number> {
   return {
     token: getToken(gameState),
     gameState: gameState.state,
     activeTurn: true,
     opponent: gameState.opponent,
+    previousTurn: { move: gameState.previousTurn },
+    showPreviousTurn: false,
   };
 }
 
 function getInactivePlayerState(gameState: gameState) {
   const currentPlayerState = getActivePlayerState(gameState);
   currentPlayerState.activeTurn = false;
+  currentPlayerState.showPreviousTurn = false;
   return currentPlayerState;
 }
 
@@ -86,16 +94,16 @@ function boardFull(board: board) {
 function getWinner(gameState: gameState): winner<string> {
   if (isWinner(gameState.state)) {
     let result = (gameState.turn % 2) as 1 | 0;
-    return { result, metaData: "" };
+    return { result, metaData: "", scoreA: 0, scoreB: 0 };
   }
-  return { result: 2, metaData: "" };
+  return { result: 2, metaData: "", scoreA: 0, scoreB: 0 };
 }
 
 function gameOver(gameState: gameState) {
   return isWinner(gameState.state) || boardFull(gameState.state);
 }
 
-function getRandomMove(state: playerState) {
+function getRandomMove(state: playerState<number>) {
   const board = state.gameState;
   let choice = Math.floor(9 * Math.random());
   while (board[choice] !== "-") {
@@ -104,28 +112,26 @@ function getRandomMove(state: playerState) {
   return choice;
 }
 
-function displayForUser(state: playerState, identifier: identifier) {
+function displayForUser(
+  state: playerState<number>,
+  identifier: identifier,
+  gameNumber: number,
+  round: string,
+) {
   console.clear();
+  console.log(`${round}, Game ${gameNumber}`);
   console.log("Current turn:", identifier);
   if (state.opponent !== "") {
     console.log("Opponent:", state.opponent);
   }
   console.log(state.gameState);
+  state.showPreviousTurn &&
+    console.log("Opponent played:", map[state.previousTurn.move as number]);
 }
 
 type userMoves = "tl" | "tm" | "tr" | "ml" | "mm" | "mr" | "bl" | "bm" | "br";
-function userMoveOptions(state: playerState) {
-  const map: userMoves[] = [
-    "tl",
-    "tm",
-    "tr",
-    "ml",
-    "mm",
-    "mr",
-    "bl",
-    "bm",
-    "br",
-  ];
+const map: userMoves[] = ["tl", "tm", "tr", "ml", "mm", "mr", "bl", "bm", "br"];
+function userMoveOptions(state: playerState<number>) {
   const validMoves = [];
   const board = state.gameState;
   for (let i = 0; i < board.length; i++) {
@@ -141,7 +147,7 @@ function userMoveTranslate(move: userMoves) {
   return map[move];
 }
 
-function playerMoveValidator(state: playerState) {
+function playerMoveValidator(state: playerState<number>) {
   const options = userMoveOptions(state);
   return function (choice: userMoves[number]) {
     if (!options.includes(choice as userMoves)) {
@@ -164,22 +170,50 @@ function showScore(
   botAIdentifier: identifier,
   botBIdentifier: identifier,
 ) {
+  console.clear();
   let wIdentifier = botAIdentifier;
   let lIdentifier = botBIdentifier;
   if (winner.result == 1) {
     wIdentifier = botBIdentifier;
     lIdentifier = botAIdentifier;
-  } else if (winner.result == 2) {
-    console.log("It is a draw");
   }
-  console.log(wIdentifier, "beats", lIdentifier);
+  if (winner.result == 2) {
+    console.log("It is a draw");
+  } else {
+    console.log(wIdentifier, "beats", lIdentifier);
+  }
+  console.log(state.state);
+}
+
+function postGameMessage(
+  result: 0 | 1 | 2,
+  scores: [number, number],
+  finalState: board,
+) {
+  return {
+    message: "ENDGAME" as "ENDGAME",
+    result,
+    score: scores[0],
+    opponentScore: scores[1],
+    finalState,
+  };
+}
+
+async function showPreviousTurn(gameState: playerState<number>) {
+  console.clear();
+  console.log("Opponent played: ", gameState.previousTurn);
+  console.log(gameState.gameState);
+  await confirm({
+    message: "Continue?",
+  });
 }
 
 export const tictactoe: gameInterface<
   gameState,
+  board,
   userMoves,
   number,
-  playerState,
+  playerState<number>,
   any
 > = {
   getInitialGameState,
@@ -190,12 +224,14 @@ export const tictactoe: gameInterface<
   getRandomMove,
   getActivePlayerState,
   getInactivePlayerState,
-  newGameMessage: (gameNumber: number) => {
-    return { message: "NEWGAME", gameNumber };
+  newGameMessage: (gameNumber: number, round: string) => {
+    return { message: "NEWGAME", gameNumber, round };
   },
+  postGameMessage,
   getWinner,
   displayForUser,
-  userMoveMessage: (state: playerState) => {
+  showPreviousTurn,
+  userMoveMessage: (state: playerState<number>) => {
     return "Choose move:";
   },
   userMoveTranslate,

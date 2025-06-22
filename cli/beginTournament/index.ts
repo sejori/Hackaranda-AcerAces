@@ -19,12 +19,6 @@ import { select as multiSelect } from "inquirer-select-pro";
 import { getPlayerDetails } from "../../helpers/getPlayerDetails.js";
 
 export async function beginTournament() {
-  const numberOfPlayers = await number({
-    message: "Number of players",
-    min: 2,
-    required: true,
-    default: 2,
-  });
   const gameType = await select({
     message: "Choose type of game",
     choices: typeOfGameOptions,
@@ -36,11 +30,25 @@ export async function beginTournament() {
     choices: typeOfTournamentOptions,
     default: TOURNAMENT_TYPE.roundRobin,
   });
+
+  const tournamentName = await input({
+    message: "Enter a unique tournament name:",
+    required: true,
+    default:
+      gameType + "-" + tournamentType + "-" + new Date().toJSON().split(".")[0],
+  });
+
+  const numberOfPlayers = await number({
+    message: "Number of players",
+    min: 2,
+    required: true,
+    default: 2,
+  });
   const bestOf = await number({
     message: "Choose best of",
     min: 1,
     required: true,
-    default: 3,
+    default: 1,
   });
 
   let players;
@@ -110,7 +118,7 @@ export async function beginTournament() {
   const messageTimeout = await number({
     message: "Message timeout (ms):",
     min: 1,
-    default: 100,
+    default: 300,
     required: true,
   });
 
@@ -136,6 +144,7 @@ export async function beginTournament() {
     playersDir,
     playerDetails: selectedDetails,
     messageTimeout,
+    tournamentName,
     userPlayer,
     userName,
     seeding,

@@ -2,6 +2,7 @@ import { cardArr } from "../helpers/cardString.js";
 import { checkLocationInPlayArea } from "../helpers/locationInPlayArea.js";
 import {
   drawingMove,
+  species,
   subTurn,
   type Card,
   type coord,
@@ -11,7 +12,7 @@ import {
   type playMove,
 } from "../types.js";
 
-export function userMoveTranslate(move: any, state: playerState): move {
+export function userMoveTranslate(move: any, state: playerState<move>): move {
   switch (state.subTurn) {
     case subTurn.FirstDraw:
     case subTurn.SecondDraw:
@@ -28,18 +29,22 @@ function drawMoveTranslate(move: drawingMove) {
 }
 
 function discardMoveTranslate(move: string) {
-  return cardArr(move);
+  let card = cardArr(move);
+  card[0] = card[0].toUpperCase() as species;
+  return card;
 }
 
-function playMoveTranslate(move: string, state: playerState): playMove {
+function playMoveTranslate(move: string, state: playerState<move>): playMove {
   const [selectedCard, direction, locationCard] = move.split(
     " ",
   ) as unknown as [string, "l" | "r" | "a" | "b", string];
-  const card = cardArr(selectedCard);
+  let card = cardArr(selectedCard);
+  card[0] = card[0].toUpperCase() as species;
   if (state.turn < 2) {
     return { card, coord: [0, 0] };
   }
   const lCard = cardArr(locationCard);
+  lCard[0] = lCard[0].toUpperCase() as species;
   const locationInPlayArea = checkLocationInPlayArea(
     state.playArea,
     lCard,

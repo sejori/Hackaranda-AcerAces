@@ -1,0 +1,9 @@
+{
+	"name": "random-bot",
+	"version": "1.0.0",
+	"type": "module",
+	"devDependencies": {
+		"@types/node": "^24.0.3",
+		"typescript": "^5.8.3"
+	}
+}

@@ -1,5 +1,5 @@
-import { playBestOf } from "./bestOf/index.js";
-import { roundRobin, type botDetail } from "./tournaments/roundRobin/index.js";
+import { roundRobin } from "./tournaments/roundRobin/index.js";
+import type { botDetail } from "./tournaments/types.js";
 
 let resolvers: Promise<unknown>[] = [];
 
@@ -77,7 +77,13 @@ async function boot() {
   //   resolvers.push(roundRobin(botDetails, "tictactoe", bestof));
   // }
   // await Promise.all(resolvers);
-  await roundRobin(botDetails, "tictactoe", bestof, messageTimeout);
+  await roundRobin(
+    botDetails,
+    "tictactoe",
+    "tournament",
+    bestof,
+    messageTimeout,
+  );
   process.exit();
 }
 

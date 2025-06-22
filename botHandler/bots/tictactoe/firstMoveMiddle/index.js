@@ -1,8 +1,8 @@
-import { beginReadline } from "./readLine.js";
+import {beginReadline} from './readLine.js';
 
-// Starts bot 
+// Starts bot
 function start() {
-  beginReadline();
+	beginReadline();
 }
 
 start();

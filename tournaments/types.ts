@@ -1,6 +1,11 @@
+import type { identifier } from "../botHandler/index.js";
 import type { gameTitle } from "../games/index.ts";
 import type { ObjectValues } from "../helpers/objectValues.ts";
-import type { botDetail } from "./roundRobin/index.js";
+export type botDetail = {
+  dockerId: string;
+  identifier: identifier;
+  variables?: string[];
+};
 export type tournamentSettings = {
   numberOfPlayers: number;
   gameType: gameTitle;
@@ -15,13 +20,14 @@ export type tournamentSettings = {
   //displayType: displayType;
   // credentials: credentials;
   //credentialDir: string;
-  //tournamentID: string;
+  tournamentName: string;
   seeding: seeding;
   seedingDir: string;
 };
 
 export const TOURNAMENT_TYPE = {
   roundRobin: "roundRobin",
+  knockout: "knockout",
   // singleElimination: "singleElimination",
   // doubleElimination: "doubleElimination",
 } as const;

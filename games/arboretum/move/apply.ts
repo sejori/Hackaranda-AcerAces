@@ -1,9 +1,11 @@
+import { cardString } from "../helpers/cardString.js";
 import {
   getCurrentDiscard,
   getOpponentDiscard,
 } from "../helpers/getDiscard.js";
 import { getCurrentHand } from "../helpers/getHand.js";
 import { getCurrentPlayArea } from "../helpers/getPlayArea.js";
+import { getCurrentSeen, getOpponentSeen } from "../helpers/getSeen.js";
 import {
   drawingMove,
   subTurn,
@@ -15,6 +17,7 @@ import {
 } from "../types.js";
 
 export function applyMove(state: gameState, move: move): gameState {
+  state.previousTurn = move;
   switch (state.subTurn) {
     case subTurn.FirstDraw:
       return applyFirstDrawMove(state, move as drawingMove);
@@ -37,6 +40,13 @@ function applyDrawMove(state: gameState, move: drawingMove): gameState {
     deck = getOpponentDiscard(state);
   }
   let cardDrawn = deck.pop() as Card;
+  const seenCurrent = getCurrentSeen(state);
+  seenCurrent.add(cardString(cardDrawn));
+  if (move !== drawingMove.Deck) {
+    const opponentSeen = getOpponentSeen(state);
+    opponentSeen.add(cardString(cardDrawn));
+  }
+  state.previousTurnMetaData = cardDrawn;
   const hand = getCurrentHand(state);
   hand.push(cardDrawn);
 
@@ -76,7 +86,9 @@ function applyPlayMove(state: gameState, move: playMove) {
     state.handB = newHand;
   }
   state.subTurn = subTurn.Discard;
-  //console.log(playArea);
+  state.previousTurnMetaData = false;
+  const opponentSeen = getOpponentSeen(state);
+  opponentSeen.add(cardString(move.card));
   return state;
 }
 
@@ -97,5 +109,8 @@ function applyDiscardMove(state: gameState, move: discardMove) {
   state.subTurn = subTurn.FirstDraw;
   state.turn += 1;
   state.currentPlayer = state.currentPlayer ? 0 : 1;
+  state.previousTurnMetaData = false;
+  const opponentSeen = getOpponentSeen(state);
+  opponentSeen.add(cardString(move));
   return state;
 }
