@@ -80,7 +80,7 @@ export function randomPlayMove(state) {
   const card = pickRandomCardFromHand(state.hand);
   const emptySpaces = getAllEmptySpaces(state.playArea);
   if (typeof emptySpaces[0] === "number") {
-    console.error({ card, coord: emptySpaces});
+    // console.error({ card, coord: emptySpaces});
     return { card, coord: emptySpaces};
   }
   const coord = pickRandomCardFromHand(

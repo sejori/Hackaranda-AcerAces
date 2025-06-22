@@ -36,6 +36,9 @@ export async function playMatch(
       let move = await currentPlayer.send(currentGameState);
       await otherMove;
 
+      if (move === "RANDOM") {
+        move = gameType.getRandomMove(currentGameState);
+      }
       if (move === "sendTimeout") {
         move = gameType.getRandomMove(currentGameState);
         let timeout = timeouts[currentPlayer.identifier];

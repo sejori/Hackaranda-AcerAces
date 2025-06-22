@@ -57,6 +57,10 @@
 		"identifier": "Draw Opponent"
 	},
 	{
+		"dockerId": "arboretum-random-message-bot",
+		"identifier": "Random Message"
+	},
+	{
 		"dockerId": "arboretum-draw-most-common-bot",
 		"identifier": "Draw Most Common"
 	}
