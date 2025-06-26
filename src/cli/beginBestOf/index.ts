@@ -52,7 +52,11 @@ export async function beginBestOf() {
             type: "file",
             filter: (item) => item.path.includes(".json") || item.isDirectory(),
             loop: true,
-            basePath: path.join(import.meta.dirname, "../../../../bots"),
+            basePath: path.join(
+              import.meta.dirname,
+              "../../../../bots",
+              gameType,
+            ),
           });
           validFile = await validatePlayerFile(playersDir);
         } catch (e) {

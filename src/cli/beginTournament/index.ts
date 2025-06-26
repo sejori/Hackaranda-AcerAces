@@ -57,7 +57,11 @@ export async function beginTournament() {
             type: "file",
             filter: (item) => item.path.includes(".json") || item.isDirectory(),
             loop: true,
-            basePath: path.join(import.meta.dirname, "../../../../bots"),
+            basePath: path.join(
+              import.meta.dirname,
+              "../../../../bots",
+              gameType,
+            ),
           });
           validFile = await validatePlayerFile(playersDir);
         } catch (e) {
@@ -83,7 +87,6 @@ export async function beginTournament() {
       defaultValue,
     });
   }
-  console.log("number of players", selectedDetails.length);
 
   const numberOfPlayers = await number({
     message: "Number of players",
@@ -117,6 +120,7 @@ export async function beginTournament() {
             basePath: path.join(
               import.meta.dirname,
               "../../../../tournamentResults",
+              gameType,
             ),
           });
           validFile = await validateSeedingFile(seedingDir);
