@@ -52,13 +52,23 @@ export function getWinner(state: gameState): winner<winMetaData> {
     }
   }
 
-  //console.log({ playerAScore, playerBScore });
   let result: 0 | 1 | 2 = 2;
   if (playerAScore > playerBScore) {
     result = 0;
   } else if (playerBScore > playerAScore) {
     result = 1;
   }
+
+  if (result === 2) {
+    const speciesCountA = speciesInHand(state.handA);
+    const speciesCountB = speciesInHand(state.handB);
+    if (speciesCountA > speciesCountB) {
+      result = 0;
+    } else if (speciesCountB > speciesCountA) {
+      result = 1;
+    }
+  }
+
   const res = {
     result,
     metaData: {
@@ -71,6 +81,19 @@ export function getWinner(state: gameState): winner<winMetaData> {
     scoreB: playerBScore,
   };
   return res;
+}
+
+function speciesInHand(hand: Hand) {
+  const speciesSet = new Set<species>();
+  let count = 0;
+  for (let card of hand) {
+    const [aSpecies, rank] = card;
+    if (!speciesSet.has(aSpecies)) {
+      speciesSet.add(aSpecies);
+      count++;
+    }
+  }
+  return count;
 }
 
 function getRightToPlay(hands: Hand[], targetSpecies: species) {
