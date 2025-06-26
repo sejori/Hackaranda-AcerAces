@@ -12,6 +12,7 @@ import { validatePlayerList } from "../../helpers/validatePlayerList.js";
 import { createTournament } from "../../tournaments/index.js";
 import { select as multiSelect } from "inquirer-select-pro";
 import { getPlayerDetails } from "../../helpers/getPlayerDetails.js";
+import path from "node:path";
 
 export async function beginBestOf() {
   const gameType = await select({
@@ -50,6 +51,8 @@ export async function beginBestOf() {
             message: "Select a file:",
             type: "file",
             filter: (item) => item.path.includes(".json") || item.isDirectory(),
+            loop: true,
+            basePath: path.join(import.meta.dirname, "../../../../bots"),
           });
           validFile = await validatePlayerFile(playersDir);
         } catch (e) {

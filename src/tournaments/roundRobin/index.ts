@@ -7,6 +7,7 @@ import { writeFile } from "fs/promises";
 import cliui from "cliui";
 import readline from "readline";
 import type { botDetail } from "../types.js";
+import path from "path";
 const ui = cliui();
 
 type table = Record<identifier, record>;
@@ -96,7 +97,7 @@ export async function roundRobin(
   }
   console.clear();
   console.log(showTable(table, identifiers));
-  await saveResults(table, identifiers, tournamentName);
+  await saveResults(table, identifiers, tournamentName, gameTitle);
   console.log("Max heap usage", maxHeapUsage);
   return;
 }
@@ -284,6 +285,7 @@ async function saveResults(
   table: table,
   identifiers: identifier[],
   tournamentName: string,
+  gameTitle: gameTitle,
 ) {
   let rows = [];
   for (let identifier of identifiers) {
@@ -311,5 +313,11 @@ async function saveResults(
     row.rank = i + 1;
   }
   const jsonRows = JSON.stringify(rows);
-  //await writeFile("../tournamentResults/" + tournamentName + ".json", jsonRows);
+  const tournamentResultsFile = path.join(
+    import.meta.dirname,
+    "../../../../tournamentResults",
+    gameTitle,
+    tournamentName + ".json",
+  );
+  await writeFile(tournamentResultsFile, jsonRows);
 }

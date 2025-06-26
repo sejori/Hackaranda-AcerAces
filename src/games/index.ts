@@ -11,4 +11,5 @@ const gameTypes: Record<
 };
 
 export type gameTitle = "arboretum" | "tictactoe";
+export const allGameTitles: gameTitle[] = ["arboretum", "tictactoe"];
 export default gameTypes;

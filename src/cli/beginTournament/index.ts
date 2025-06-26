@@ -17,6 +17,7 @@ import { validatePlayerList } from "../../helpers/validatePlayerList.js";
 import { createTournament } from "../../tournaments/index.js";
 import { select as multiSelect } from "inquirer-select-pro";
 import { getPlayerDetails } from "../../helpers/getPlayerDetails.js";
+import path from "node:path";
 
 export async function beginTournament() {
   const gameType = await select({
@@ -38,19 +39,6 @@ export async function beginTournament() {
       gameType + "-" + tournamentType + "-" + new Date().toJSON().split(".")[0],
   });
 
-  const numberOfPlayers = await number({
-    message: "Number of players",
-    min: 2,
-    required: true,
-    default: 2,
-  });
-  const bestOf = await number({
-    message: "Choose best of",
-    min: 1,
-    required: true,
-    default: 1,
-  });
-
   let players;
   let playersDir = "";
   let playerDetails = [];
@@ -68,6 +56,8 @@ export async function beginTournament() {
             message: "Select a file:",
             type: "file",
             filter: (item) => item.path.includes(".json") || item.isDirectory(),
+            loop: true,
+            basePath: path.join(import.meta.dirname, "../../../../bots"),
           });
           validFile = await validatePlayerFile(playersDir);
         } catch (e) {
@@ -93,10 +83,23 @@ export async function beginTournament() {
       defaultValue,
     });
   }
+  console.log("number of players", selectedDetails.length);
 
+  const numberOfPlayers = await number({
+    message: "Number of players",
+    min: 2,
+    required: true,
+    default: Math.max(selectedDetails.length || 2, 2),
+  });
+  const bestOf = await number({
+    message: "Choose best of",
+    min: 1,
+    required: true,
+    default: 1,
+  });
   let seeding;
   let seedingDir = "";
-  if (tournamentType !== TOURNAMENT_TYPE.roundRobin) {
+  while (seeding !== SEEDING.random) {
     seeding = await select({
       message: "Choose seeding",
       choices: seedingOptions,
@@ -105,12 +108,26 @@ export async function beginTournament() {
     if (seeding === SEEDING.fromFile) {
       let validFile = false;
       while (!validFile) {
-        seedingDir = await fileSelector({
-          message: "Select a file:",
-          type: "file",
-          filter: (item) => item.path.includes(".json") || item.isDirectory(),
-        });
-        validFile = await validateSeedingFile(seedingDir);
+        try {
+          seedingDir = await fileSelector({
+            message: "Select a file:",
+            type: "file",
+            filter: (item) => item.path.includes(".json") || item.isDirectory(),
+            loop: true,
+            basePath: path.join(
+              import.meta.dirname,
+              "../../../../tournamentResults",
+            ),
+          });
+          validFile = await validateSeedingFile(seedingDir);
+        } catch (e) {
+          console.log("caught error");
+          console.log({ validFile });
+          break;
+        }
+      }
+      if (validFile) {
+        break;
       }
     }
   }

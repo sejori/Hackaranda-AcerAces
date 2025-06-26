@@ -17,7 +17,6 @@ node_modules
 
 # Coverage directory used by testing tools
 coverage
-tournamentResults/*
 
 # Visual Studio Code configuration
 .vscode/
