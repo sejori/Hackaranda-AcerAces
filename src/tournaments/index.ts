@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { roundRobin } from "./roundRobin/index.js";
 import {
-  PLAYERS,
   SEEDING,
   USERPLAYER,
   type botDetail,

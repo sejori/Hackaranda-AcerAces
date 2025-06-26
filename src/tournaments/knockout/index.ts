@@ -155,7 +155,7 @@ async function getNewMatchup(
   let draws = results.draws as number;
   log &&
     console.log(
-      `${botAIdentifier} ${aResults} - (draws ${draws}) ${bResults} ${botBIdentifier}`,
+      `${botAIdentifier} ${aResults} - (draws ${draws}) - ${bResults} ${botBIdentifier}`,
     );
   return [botAIdentifier, aResults, botBIdentifier, bResults];
 }

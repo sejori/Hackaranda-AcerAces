@@ -1,9 +1,8 @@
 import { confirm } from "@inquirer/prompts";
 import { BotProcess, type identifier } from "../botHandler/index.js";
 import type { gameTitle } from "../games/index.js";
-import gameTypes from "../games/index.js";
+import { default as defaultTypes } from "../games/index.js";
 import type { winner } from "../games/types.js";
-import { writeFileSync } from "node:fs";
 
 export async function playMatch(
   botA: BotProcess,
@@ -11,6 +10,7 @@ export async function playMatch(
   id: number,
   gameTitle: gameTitle,
   log = false,
+  gameTypes = defaultTypes,
 ) {
   let gameType = gameTypes[gameTitle];
   let gameState = gameType.getInitialGameState();
