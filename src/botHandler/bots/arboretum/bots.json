@@ -4,10 +4,6 @@
 		"identifier": "Discard Lowest"
 	},
 	{
-		"dockerId": "arboretum-llm-bot",
-		"identifier": "LLM"
-	},
-	{
 		"dockerId": "arboretum-decent-bot",
 		"identifier": "Decent"
 	},
@@ -33,20 +29,8 @@
 		"identifier": "Busy Rarest"
 	},
 	{
-		"dockerId": "arboretum-busy-rarest-bot",
-		"identifier": "Busy Rarest 2"
-	},
-	{
 		"dockerId": "arboretum-busy-lowest-bot",
 		"identifier": "Busy Lowest"
-	},
-	{
-		"dockerId": "arboretum-busy-draw-bot",
-		"identifier": "Busy Draw"
-	},
-	{
-		"dockerId": "arboretum-draw-deck-bot",
-		"identifier": "Draw Deck"
 	},
 	{
 		"dockerId": "arboretum-draw-discard-bot",

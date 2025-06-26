@@ -1,6 +1,6 @@
 import {discardMove} from './discard.js';
 import { drawMove } from './draw.js';
-import {playMove} from './play.js';
+import {randomPlayMove} from './play.js';
 
 export function handleMove(state) {
 	switch (state.subTurn) {
@@ -8,7 +8,7 @@ export function handleMove(state) {
 		case 1:
 			return drawMove(state);
 		case 2:
-			return playMove(state);
+			return randomPlayMove(state);
 		case 3:
 			return discardMove(state);
 	}

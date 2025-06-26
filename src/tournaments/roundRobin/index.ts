@@ -311,5 +311,5 @@ async function saveResults(
     row.rank = i + 1;
   }
   const jsonRows = JSON.stringify(rows);
-  await writeFile("./tournamentResults/" + tournamentName + ".json", jsonRows);
+  //await writeFile("../tournamentResults/" + tournamentName + ".json", jsonRows);
 }
