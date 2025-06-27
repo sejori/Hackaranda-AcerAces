@@ -2,6 +2,7 @@
 
 ## Setup
 
+Install node: [https://nodejs.org/en/download/current]
 Install Docker and ensure Docker is running
 
 ```
