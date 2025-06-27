@@ -112,4 +112,3 @@ export type winMetaData = {
   bScore: number;
   bPaths: pathScore[];
 };
-

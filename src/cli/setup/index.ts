@@ -4,14 +4,22 @@ import { spawn } from "child_process";
 import chalk from "chalk";
 import { allGameTitles, type gameTitle } from "../../games/index.js";
 import type { botDetail } from "../../tournaments/types.js";
+import { confirm } from "@inquirer/prompts";
 
 export async function setup() {
   // Docker bots
   const dockerBotsURL = path.join(
     import.meta.dirname + "../../../../src/botHandler/bots",
   );
-  // await checkDockerActive();
-  // console.log("checkingDocker");
+  const checkDocker = await checkDockerActive();
+  if (!checkDocker) {
+    const choice = await confirm({
+      message: "Docker may not be running - attempt to build? ",
+    });
+    if (!choice) {
+      return;
+    }
+  }
 
   const failures: Record<gameTitle, botDetail[]> = {
     arboretum: [],
@@ -38,8 +46,16 @@ export async function setup() {
 }
 
 async function checkDockerActive() {
-  const docker = spawn("docker", ["ps"]);
-  docker.on("message", (a) => console.log(a));
+  return new Promise((res) => {
+    console.log("Checking Docker Process");
+    const docker = spawn("docker", ["ps"]);
+    docker.stdout.on("data", (data) => {
+      res(true);
+    });
+    docker.stderr.on("data", (data) => {
+      res(false);
+    });
+  });
 }
 
 async function buildBots(dockerBotsURL: string, game: string) {
