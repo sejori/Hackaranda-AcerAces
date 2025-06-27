@@ -1,10 +1,8 @@
-import { readdir, readFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import path from "path";
-import Docker from "dockerode";
-import tar from "tar-fs";
 import { spawn } from "child_process";
 import chalk from "chalk";
-import gameTypes, { allGameTitles, type gameTitle } from "../../games/index.js";
+import { allGameTitles, type gameTitle } from "../../games/index.js";
 import type { botDetail } from "../../tournaments/types.js";
 
 export async function setup() {
@@ -35,6 +33,11 @@ export async function setup() {
       console.log("--", bot.identifier);
     }
   }
+}
+
+async function checkDockerActive() {
+  const docker = spawn("docker", ["ps"]);
+  docker.on("message", (a) => console.log(a));
 }
 
 async function buildBots(dockerBotsURL: string, game: string) {

@@ -63,7 +63,6 @@ export async function playMatch(
     }
 
     winner = gameType.getWinner(gameState);
-    // console.log(winner);
     if (botA.imageName === "player" || botB.imageName === "player") {
       gameType.showScore(gameState, winner, botA.identifier, botB.identifier);
       await confirm({ message: "Enter to continue." });
@@ -74,20 +73,6 @@ export async function playMatch(
     console.error(error);
     log && console.error(error);
   } finally {
-    // const fileName = crypto.randomUUID();
-    // writeFileSync("./matchData/" + fileName + ".json", JSON.stringify(output));
-    // if (winner.result === 2) {
-    //   console.log(2);
-    //   console.log({ scoreA, scoreB });
-    // }
-    // if (winner.result === 1) {
-    //   console.log(1);
-    //   console.log({ scoreA, scoreB });
-    // }
-    // if (winner.result === 0) {
-    //   console.log(0);
-    //   console.log({ scoreA, scoreB });
-    // }
     return {
       result: winner.result,
       scores: [scoreA, scoreB],

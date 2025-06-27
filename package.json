@@ -7,27 +7,22 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest",
-    "start": "node dist/src/cli"
+    "test": "vitest",
+    "start": "node dist/src/cli",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0",
-    "@types/jest": "^30.0.0",
     "@types/node": "^22.15.18",
-    "jest": "^30.0.2",
-    "ts-jest": "^29.4.0"
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.3",
-    "@types/dockerode": "^3.3.41",
-    "@types/tar-fs": "^2.0.4",
     "chalk": "^5.4.1",
     "cliui": "^9.0.1",
-    "dockerode": "^4.0.7",
     "figlet": "^1.8.1",
     "inquirer-file-selector": "^0.6.2",
     "inquirer-select-pro": "^1.0.0-alpha.9",
-    "table": "^6.9.0",
-    "tar-fs": "^3.0.10"
+    "table": "^6.9.0"
   }
 }

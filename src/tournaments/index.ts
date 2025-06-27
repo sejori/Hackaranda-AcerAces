@@ -151,13 +151,3 @@ export function botsFromBotDetail(
   }
   return [bots, identifiers];
 }
-
-async function createBotDetailsFromFile(fileDir: string): Promise<botDetail[]> {
-  try {
-    let contents = await readFile(fileDir);
-    return JSON.parse(contents.toString());
-  } catch (e) {
-    console.error(e);
-  }
-  return [];
-}
