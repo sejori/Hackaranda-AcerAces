@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "start": "node dist/src/cli",
+    "start": "node dist/cli",
     "build": "tsc"
   },
   "devDependencies": {

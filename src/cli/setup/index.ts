@@ -10,6 +10,8 @@ export async function setup() {
   const dockerBotsURL = path.join(
     import.meta.dirname + "../../../../../src/botHandler/bots",
   );
+  // await checkDockerActive();
+  // console.log("checkingDocker");
 
   const failures: Record<gameTitle, botDetail[]> = {
     arboretum: [],
