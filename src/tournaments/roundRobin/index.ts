@@ -315,7 +315,7 @@ async function saveResults(
   const jsonRows = JSON.stringify(rows);
   const tournamentResultsFile = path.join(
     import.meta.dirname,
-    "../../../../tournamentResults",
+    "../../../tournamentResults",
     gameTitle,
     tournamentName + ".json",
   );

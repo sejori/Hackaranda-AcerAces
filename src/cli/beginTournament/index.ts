@@ -52,16 +52,18 @@ export async function beginTournament() {
       let validFile = false;
       while (!validFile) {
         try {
+          const basePath = path.join(
+            import.meta.dirname,
+            "../../../bots",
+            gameType,
+          );
+          console.log(basePath);
           playersDir = await fileSelector({
             message: "Select a file:",
             type: "file",
             filter: (item) => item.path.includes(".json") || item.isDirectory(),
             loop: true,
-            basePath: path.join(
-              import.meta.dirname,
-              "../../../../bots",
-              gameType,
-            ),
+            basePath,
           });
           validFile = await validatePlayerFile(playersDir);
         } catch (e) {
@@ -119,14 +121,12 @@ export async function beginTournament() {
             loop: true,
             basePath: path.join(
               import.meta.dirname,
-              "../../../../tournamentResults",
+              "../../../tournamentResults",
               gameType,
             ),
           });
           validFile = await validateSeedingFile(seedingDir);
         } catch (e) {
-          console.log("caught error");
-          console.log({ validFile });
           break;
         }
       }

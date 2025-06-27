@@ -54,7 +54,7 @@ export async function beginBestOf() {
             loop: true,
             basePath: path.join(
               import.meta.dirname,
-              "../../../../bots",
+              "../../../bots",
               gameType,
             ),
           });

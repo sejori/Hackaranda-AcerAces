@@ -430,15 +430,3 @@ function sortRound(round: any[]): any[] {
   const secondHalf = round.filter((_, index) => index % 2 === 1);
   return [...sortRound(firstHalf), ...sortRound(secondHalf).reverse()];
 }
-
-/**
- *
- *
- *  r1 3
- *  r2 5
- *        r2 7
- *        r5 2
- *  r3 8
- *  r5 12
- *
- */
