@@ -8,7 +8,7 @@ import type { botDetail } from "../../tournaments/types.js";
 export async function setup() {
   // Docker bots
   const dockerBotsURL = path.join(
-    import.meta.dirname + "../../../../../src/botHandler/bots",
+    import.meta.dirname + "../../../../src/botHandler/bots",
   );
   // await checkDockerActive();
   // console.log("checkingDocker");
