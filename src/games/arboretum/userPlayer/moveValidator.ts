@@ -54,6 +54,9 @@ function userDrawValidator(state: playerState<move>) {
   return function (choice: userMove) {
     try {
       choice = choice as drawingMove;
+      if ((choice as unknown) == '') {
+        return 'Invalid Draw';
+      }
       if (options.includes(Number(choice))) {
         return true;
       }
