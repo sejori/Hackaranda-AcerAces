@@ -141,6 +141,9 @@ function userPlayValidator(state: playerState<move>) {
 function userDiscardValidator(state: playerState<move>) {
   return function (choice: userMove) {
     try {
+      if ((choice as string)?.length > 2) {
+        return 'Invalid discard';
+      }
       const cardInHand = state.hand.some(
         (card) =>
           card[0] === (choice as Card)[0].toUpperCase() &&
