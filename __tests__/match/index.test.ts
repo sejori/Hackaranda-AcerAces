@@ -130,4 +130,51 @@ describe("Match", () => {
       }
     }
   });
+  test('Performs random move if bot times out', async () => {
+    const turns = 20;
+    const randomMovesTests = [
+      [1, 4, 5, 8],
+      [1, 3, 6, 10],
+      [8, 10, 15, 18],
+    ];
+    for (let randomMoves of randomMovesTests) {
+      const gameInterface = getMockGameInterface(turns);
+      gameInterface.getRandomMove = vi
+        .fn()
+        .mockReturnValue("ExpectedRandomMove");
+      const firstBot = getBotProcessMock("test", "Test1");
+      firstBot.send = vi.fn(async (gameState: any) => {
+        if (randomMoves.includes(gameState.turn)) {
+          return "sendTimeout";
+        }
+        return "move from " + firstBot.identifier;
+      });
+      const secondBot = getBotProcessMock("test", "Test2");
+      secondBot.send = vi.fn(async (gameState: any) => {
+        if (randomMoves.includes(gameState.turn)) {
+          return "RANDOM";
+        }
+        return "move from " + secondBot.identifier;
+      });
+      const result = await playMatch(
+        firstBot,
+        secondBot,
+        1,
+        "arboretum",
+        false,
+        {
+          arboretum: gameInterface,
+          tictactoe: gameInterface,
+        },
+      );
+      for (let i = 0; i < turns; i++) {
+        const move = result.gameState.moves[i];
+        if (randomMoves.includes(i)) {
+          expect(move).toBe("ExpectedRandomMove");
+        } else {
+          expect(move).not.toBe("ExpectedRandomMove");
+        }
+      }
+    }
+  });
 });
