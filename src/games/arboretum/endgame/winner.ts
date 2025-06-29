@@ -1,4 +1,5 @@
 import type { winner } from "../../types.js";
+import { getCardsFromPlayArea } from "../helpers/getCardsFromPlayArea.js";
 import {
   species,
   type gameState,
@@ -60,8 +61,8 @@ export function getWinner(state: gameState): winner<winMetaData> {
   }
 
   if (result === 2) {
-    const speciesCountA = speciesInHand(state.handA);
-    const speciesCountB = speciesInHand(state.handB);
+    const speciesCountA = speciesInHand(getCardsFromPlayArea(state.playAreaA));
+    const speciesCountB = speciesInHand(getCardsFromPlayArea(state.playAreaB));
     if (speciesCountA > speciesCountB) {
       result = 0;
     } else if (speciesCountB > speciesCountA) {
