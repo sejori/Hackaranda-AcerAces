@@ -104,7 +104,7 @@ export async function beginTournament() {
   });
   let seeding;
   let seedingDir = "";
-  while (seeding !== SEEDING.random) {
+  while (seeding !== SEEDING.random && tournamentType !== TOURNAMENT_TYPE.roundRobin) {
     seeding = await select({
       message: "Choose seeding",
       choices: seedingOptions,

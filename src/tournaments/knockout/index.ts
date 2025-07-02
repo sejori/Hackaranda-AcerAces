@@ -102,7 +102,6 @@ export async function knockout(
     }
   }
   showSymmetricalTable(roundResults, 5);
-  console.log("Winner is", matchups[0]?.[0]);
   console.log("Max heap usage", maxHeapUsage);
   return;
 }
@@ -344,10 +343,10 @@ function showTable(
   const roundResultsShortened = roundResults.slice(startIndex);
   const rounds = roundResultsShortened.length;
   let rows = [];
-  let startDistace = 1;
+  let startDistance = 1;
   let distanceBetween = 2;
   for (let i = 0; i < rounds; i++) {
-    startDistace *= 2;
+    startDistance *= 2;
     distanceBetween *= 2;
     let round = roundResultsShortened[i];
     if (round == undefined) {
@@ -378,8 +377,8 @@ function showTable(
         rows.push(newRow4);
         continue;
       }
-      let row1 = rows[startDistace + j * distanceBetween - 1];
-      let row2 = rows[startDistace + j * distanceBetween];
+      let row1 = rows[startDistance + j * distanceBetween - 1];
+      let row2 = rows[startDistance + j * distanceBetween];
       if (row1 == undefined || row2 == undefined) {
         throw new Error();
       }
