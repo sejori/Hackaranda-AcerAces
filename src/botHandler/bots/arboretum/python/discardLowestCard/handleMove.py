@@ -1,2 +1,0 @@
-def handleMove():
-    return 'discardLowestCard'

@@ -74,5 +74,10 @@
 		"dockerId": "arboretum-random-csharp",
 		"identifier": "Random (csharp)",
     "path": "./cSharp/random"
+	},
+	{
+		"dockerId": "arboretum-python-llm-test",
+		"identifier": "LBR GPT",
+    "path": "./python/LLM_randomMessage"
 	}
 ]
