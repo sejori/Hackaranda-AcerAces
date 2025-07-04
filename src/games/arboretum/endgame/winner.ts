@@ -1,13 +1,12 @@
 import type { winner } from "../../types.js";
-import { getCardsFromPlayArea } from "../helpers/getCardsFromPlayArea.js";
 import {
   species,
   type gameState,
-  type Hand,
   type path,
   type pathScore,
   type winMetaData,
 } from "../types.js";
+import { compareSpeciesInPlayArea } from "./compareSpecies.js";
 import { getRightToPlay } from "./rightToPlay.js";
 import { scorePlayArea } from "./scoring.js";
 
@@ -62,13 +61,7 @@ export function getWinner(state: gameState): winner<winMetaData> {
   }
 
   if (result === 2) {
-    const speciesCountA = speciesInHand(getCardsFromPlayArea(state.playAreaA));
-    const speciesCountB = speciesInHand(getCardsFromPlayArea(state.playAreaB));
-    if (speciesCountA > speciesCountB) {
-      result = 0;
-    } else if (speciesCountB > speciesCountA) {
-      result = 1;
-    }
+    result = compareSpeciesInPlayArea(state.playAreaA, state.playAreaB);
   }
 
   const res = {
@@ -83,17 +76,4 @@ export function getWinner(state: gameState): winner<winMetaData> {
     scoreB: playerBScore,
   };
   return res;
-}
-
-function speciesInHand(hand: Hand) {
-  const speciesSet = new Set<species>();
-  let count = 0;
-  for (let card of hand) {
-    const [aSpecies, rank] = card;
-    if (!speciesSet.has(aSpecies)) {
-      speciesSet.add(aSpecies);
-      count++;
-    }
-  }
-  return count;
 }
