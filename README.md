@@ -11,6 +11,7 @@ Ensure Docker is running.
 
 Download or `git clone` this repository. Open a terminal at its location and run the following:
 
+
 1. Install dependencies with the following command:
 ```
 npm i
@@ -78,3 +79,6 @@ The menu options are similar to 'Begin Best Of' but with some changes.
         - Use a randomly generated seeding
     - Choose File
         - Tournament results can be used as seeding, they are stored in `./tournamentResults`
+
+
+
