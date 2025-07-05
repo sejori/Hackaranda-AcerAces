@@ -5,20 +5,16 @@ import chalk from "chalk";
 import { allGameTitles, type gameTitle } from "../../games/index.js";
 import type { botDetail } from "../../tournaments/types.js";
 import { confirm } from "@inquirer/prompts";
+import { checkDockerActive, dockerActiveChoice } from "../helpers/docker.js";
 
 export async function setup() {
   // Docker bots
   const dockerBotsURL = path.join(
     import.meta.dirname + "../../../../src/botHandler/bots",
   );
-  const checkDocker = await checkDockerActive();
-  if (!checkDocker) {
-    const choice = await confirm({
-      message: "Docker may not be running - attempt to build? ",
-    });
-    if (!choice) {
-      return;
-    }
+  const choice = await dockerActiveChoice();
+  if (!choice) {
+    return;
   }
 
   const failures: Record<gameTitle, botDetail[]> = {
@@ -43,19 +39,6 @@ export async function setup() {
       console.log("--", bot.identifier);
     }
   }
-}
-
-async function checkDockerActive() {
-  return new Promise((res) => {
-    console.log("Checking Docker Process");
-    const docker = spawn("docker", ["ps"]);
-    docker.stdout.on("data", (data) => {
-      res(true);
-    });
-    docker.stderr.on("data", (data) => {
-      res(false);
-    });
-  });
 }
 
 async function buildBots(dockerBotsURL: string, game: string) {

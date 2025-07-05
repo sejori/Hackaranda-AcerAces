@@ -18,8 +18,13 @@ import { createTournament } from "../../tournaments/index.js";
 import { select as multiSelect } from "inquirer-select-pro";
 import { getPlayerDetails } from "../../helpers/getPlayerDetails.js";
 import path from "node:path";
+import { dockerActiveChoice } from "../helpers/docker.js";
 
 export async function beginTournament() {
+  const choice = await dockerActiveChoice();
+  if (!choice) {
+    return;
+  }
   const gameType = await select({
     message: "Choose type of game",
     choices: typeOfGameOptions,
@@ -104,7 +109,10 @@ export async function beginTournament() {
   });
   let seeding;
   let seedingDir = "";
-  while (seeding !== SEEDING.random && tournamentType !== TOURNAMENT_TYPE.roundRobin) {
+  while (
+    seeding !== SEEDING.random &&
+    tournamentType !== TOURNAMENT_TYPE.roundRobin
+  ) {
     seeding = await select({
       message: "Choose seeding",
       choices: seedingOptions,

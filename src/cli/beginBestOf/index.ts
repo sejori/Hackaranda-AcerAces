@@ -13,8 +13,13 @@ import { createTournament } from "../../tournaments/index.js";
 import { select as multiSelect } from "inquirer-select-pro";
 import { getPlayerDetails } from "../../helpers/getPlayerDetails.js";
 import path from "node:path";
+import { dockerActiveChoice } from "../helpers/docker.js";
 
 export async function beginBestOf() {
+  const choice = await dockerActiveChoice();
+  if (!choice) {
+    return;
+  }
   const gameType = await select({
     message: "Choose type of game",
     choices: typeOfGameOptions,
@@ -52,11 +57,7 @@ export async function beginBestOf() {
             type: "file",
             filter: (item) => item.path.includes(".json") || item.isDirectory(),
             loop: true,
-            basePath: path.join(
-              import.meta.dirname,
-              "../../../bots",
-              gameType,
-            ),
+            basePath: path.join(import.meta.dirname, "../../../bots", gameType),
           });
           validFile = await validatePlayerFile(playersDir);
         } catch (e) {
