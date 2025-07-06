@@ -18,6 +18,7 @@ import { confirm } from "@inquirer/prompts";
 import cliui from "cliui";
 import figlet from "figlet";
 import { cardString } from "../helpers/cardString.js";
+import { setTimeout } from "node:timers/promises";
 
 export function displayForUser(
   state: playerState<move>,
@@ -28,10 +29,10 @@ export function displayForUser(
   const ui = cliui();
   console.clear();
   const leftDiv = [];
-  leftDiv.push("Play Area");
+  leftDiv.push((identifier + "'s " || "Your ") + "Play Area");
   leftDiv.push(nicePlayArea(state.playArea, "", true));
   const rightDiv = [];
-  rightDiv.push("Opponent's play area");
+  rightDiv.push((state.opponent || "Opponent") + "'s play area");
   rightDiv.push(nicePlayArea(state.opponentPlayArea, "", true));
   ui.div({
     text: figlet.textSync("ARBORETUM", { font: "AMC Tubes" }),
@@ -48,7 +49,9 @@ export function displayForUser(
   ui.div({ text: "---------------", align: "center" });
   ui.div(
     {
-      text: niceDeck(state.discard, " ", "last") + " :Your Discard",
+      text:
+        niceDeck(state.discard, " ", "last") +
+        ` :${identifier + "'s" || "Your"} Discard`,
       align: "right",
     },
     {
@@ -57,15 +60,19 @@ export function displayForUser(
     },
     {
       text:
-        "Opponent's discard: " +
+        (state.opponent || "Opponent") +
+        "'s discard: " +
         niceDeck(state.opponentDiscard, " ", "last", true),
       align: "left",
     },
   );
   ui.div({ text: "---------------", align: "center" });
   ui.div(
-    { text: "Hand", align: "center" },
-    { text: "Opponent's Hand", align: "center" },
+    { text: (identifier + "'s " || "Your ") + "Hand", align: "center" },
+    {
+      text: (state.opponent + "'s " || "Opponent's ") + "Hand",
+      align: "center",
+    },
   );
   ui.div(
     { text: fancyDeck(sortDeck(state.hand)), align: "center" },
@@ -94,18 +101,22 @@ export function userMoveMessage(state: playerState<move>) {
 }
 export async function showPreviousTurn(
   gameState: playerState<move>,
+  identifier: string,
   game: number,
   round: string,
+  continueMethod: number | "enter" = "enter",
 ) {
   const newGameState = {
     ...gameState,
     subTurn: getPreviousSubTurn(gameState.subTurn),
   };
-  displayForUser(newGameState, "", game, round);
+  displayForUser(newGameState, identifier, game, round);
   console.log(friendlyPreviousTurn(gameState));
-  await confirm({
-    message: "Continue? ",
-  });
+  if (continueMethod === "enter") {
+    await confirm({ message: "Continue?" });
+  } else {
+    await setTimeout(continueMethod);
+  }
 }
 
 function friendlyPreviousTurn(gameState: playerState<move>) {

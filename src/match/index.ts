@@ -6,6 +6,8 @@ import {
 import type { gameTitle } from "../games/index.js";
 import { default as defaultTypes } from "../games/index.js";
 import type { winner } from "../games/types.js";
+import path from "path";
+import { writeFile } from "fs/promises";
 
 export async function playMatch(
   botA: BotProcess,
@@ -13,10 +15,12 @@ export async function playMatch(
   id: number,
   gameTitle: gameTitle,
   log = false,
+  initialState: boolean | any = false,
+  playBack = false,
   gameTypes = defaultTypes,
 ) {
   let gameType = gameTypes[gameTitle];
-  let gameState = gameType.getInitialGameState();
+  let gameState = gameType.getInitialGameState(initialState, playBack);
   log && console.log("Initial state:", gameState);
   let winner: winner<any> = { result: 2, metaData: {}, scoreA: 0, scoreB: 0 };
   let timeouts: Record<identifier, number> = {};
@@ -72,6 +76,13 @@ export async function playMatch(
     }
     scoreA += winner.scoreA;
     scoreB += winner.scoreB;
+    process.env.write_output &&
+      writeOutputToFile(
+        output,
+        [botA.identifier, botB.identifier],
+        gameTitle,
+        winner,
+      );
   } catch (error) {
     console.error(error);
     log && console.error(error);
@@ -83,4 +94,27 @@ export async function playMatch(
       gameState,
     };
   }
+}
+
+async function writeOutputToFile(
+  output: any[],
+  players: [identifier, identifier],
+  game: gameTitle,
+  winner: any,
+) {
+  const out = {
+    game,
+    players,
+    initialState: output[0],
+    moves: output.slice(1),
+    winner,
+  };
+  const jsonRows = JSON.stringify(out);
+  const tournamentResultsFile = path.join(
+    import.meta.dirname,
+    "../../matchResults",
+    game,
+    crypto.randomUUID() + ".json",
+  );
+  await writeFile(tournamentResultsFile, jsonRows);
 }

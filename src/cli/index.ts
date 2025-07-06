@@ -1,7 +1,8 @@
 import { select } from "@inquirer/prompts";
 import { beginTournament } from "./beginTournament/index.js";
-import { beginBestOf } from "./beginBestOf/index.js";
 import { setup } from "./setup/index.js";
+import { beginBestOf } from "./beginBestOf/index.js";
+import { beginPlayBack } from "./beginPlayBack/index.js";
 
 async function go() {
   console.clear();
@@ -30,6 +31,10 @@ const toplevelOptions: Choice<() => Promise<void>>[] = [
   {
     value: beginTournament,
     name: "Begin Tournament",
+  },
+  {
+    value: beginPlayBack,
+    name: "Begin Playback",
   },
   {
     value: setup,

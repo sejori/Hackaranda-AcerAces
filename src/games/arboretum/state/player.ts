@@ -26,7 +26,7 @@ export function getActivePlayerState(state: gameState): playerState<move> {
     playArea: state.currentPlayer == 0 ? state.playAreaA : state.playAreaB,
     opponentPlayArea:
       state.currentPlayer == 0 ? state.playAreaB : state.playAreaA,
-    opponentHand: opponentFilteredHand,
+    opponentHand: state.playBack ? opponentHand : opponentFilteredHand,
     turn: state.turn,
     subTurn: state.subTurn,
     previousTurn: {
@@ -35,6 +35,7 @@ export function getActivePlayerState(state: gameState): playerState<move> {
     },
     activeTurn: true,
     showPreviousTurn,
+    opponent: state.playBack ? state.opponent : "",
   };
 }
 
@@ -63,7 +64,7 @@ export function getInactivePlayerState(state: gameState): playerState<move> {
     playArea: state.currentPlayer == 1 ? state.playAreaA : state.playAreaB,
     opponentPlayArea:
       state.currentPlayer == 1 ? state.playAreaB : state.playAreaA,
-    opponentHand: opponentFilteredHand,
+    opponentHand: state.playBack ? opponentHand : opponentFilteredHand,
     turn: state.turn,
     subTurn: state.subTurn,
     previousTurn: {
@@ -72,5 +73,6 @@ export function getInactivePlayerState(state: gameState): playerState<move> {
     },
     activeTurn: false,
     showPreviousTurn,
+    opponent: state.playBack ? state.opponent : "",
   };
 }

@@ -18,6 +18,8 @@ describe("Match", () => {
         1,
         "arboretum",
         false,
+        false,
+        false,
         {
           arboretum: gameInterface,
           tictactoe: gameInterface,
@@ -51,6 +53,8 @@ describe("Match", () => {
         secondBot,
         1,
         "arboretum",
+        false,
+        false,
         false,
         {
           arboretum: gameInterface,
@@ -115,6 +119,8 @@ describe("Match", () => {
         1,
         "arboretum",
         false,
+        false,
+        false,
         {
           arboretum: gameInterface,
           tictactoe: gameInterface,
@@ -130,7 +136,7 @@ describe("Match", () => {
       }
     }
   });
-  test('Performs random move if bot times out', async () => {
+  test("Performs random move if bot times out", async () => {
     const turns = 20;
     const randomMovesTests = [
       [1, 4, 5, 8],
@@ -161,6 +167,8 @@ describe("Match", () => {
         secondBot,
         1,
         "arboretum",
+        false,
+        false,
         false,
         {
           arboretum: gameInterface,

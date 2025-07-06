@@ -39,6 +39,7 @@ export type gameState = {
   turn: number;
   currentPlayer: number;
   opponent: string;
+  playBack: boolean;
 };
 
 export type playerState<S> = {
@@ -74,7 +75,7 @@ export type gameInterface<
   /**
    * Set initial gameState
    */
-  getInitialGameState: () => S;
+  getInitialGameState: (initialState: false | S, playBack: boolean) => S;
 
   /**
    *  Number of players
@@ -148,8 +149,10 @@ export type gameInterface<
    */
   showPreviousTurn: (
     gameState: T,
+    identifier: identifier,
     gameNumber: number,
     round: string,
+    continueMethod: "enter" | number,
   ) => Promise<void>;
   /**
    * Print message to prompt user for current move

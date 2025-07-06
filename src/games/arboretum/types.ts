@@ -56,6 +56,7 @@ export type gameState = {
   opponent: string;
   previousTurn: false | move;
   previousTurnMetaData: false | Card;
+  playBack: boolean;
 };
 
 export type playerState<move> = {
@@ -81,6 +82,7 @@ export type playerState<move> = {
   activeTurn: boolean;
   previousTurn: { move: move | false; metaData: Card | false };
   showPreviousTurn: boolean;
+  opponent: string
 };
 
 export enum drawingMove {

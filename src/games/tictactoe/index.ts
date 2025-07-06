@@ -10,6 +10,7 @@ type gameState = {
   state: board;
   opponent: string;
   previousTurn: false | number;
+  playBack: false;
 };
 type board = [tile, tile, tile, tile, tile, tile, tile, tile, tile];
 type move = number;
@@ -29,6 +30,7 @@ function getInitialGameState(): gameState {
     state: ["-", "-", "-", "-", "-", "-", "-", "-", "-"],
     opponent: "",
     previousTurn: false,
+    playBack: false,
   };
 }
 

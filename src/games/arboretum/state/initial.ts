@@ -10,13 +10,18 @@ import {
   ranks,
 } from "../types.js";
 
-export function getInitialGameState(): gameState {
-  const deck = generateDeck();
-  const handA = [];
-  const handB = [];
-  for (let i = 0; i < 7; i++) {
-    handA.push(deck.pop() as Card);
-    handB.push(deck.pop() as Card);
+export function getInitialGameState(
+  initialState: false | gameState,
+  playBack: boolean,
+): gameState {
+  const deck = initialState !== false ? initialState.deck : generateDeck();
+  const handA = initialState !== false ? initialState.handA : [];
+  const handB = initialState !== false ? initialState.handB : [];
+  if (handA.length === 0 || handB.length == 0) {
+    for (let i = 0; i < 7; i++) {
+      handA.push(deck.pop() as Card);
+      handB.push(deck.pop() as Card);
+    }
   }
   // for (let i = 0; i < 20; i++) {
   //   deck.pop();
@@ -25,7 +30,7 @@ export function getInitialGameState(): gameState {
   const seenB = new Set(...handB.map((card) => cardString(card)));
 
   return {
-    deck,
+    deck: initialState !== false ? initialState.deck : deck,
     handA,
     handB,
     discardA: [] as Discard,
@@ -40,6 +45,7 @@ export function getInitialGameState(): gameState {
     opponent: "",
     previousTurn: false,
     previousTurnMetaData: false,
+    playBack: playBack,
   };
 }
 
