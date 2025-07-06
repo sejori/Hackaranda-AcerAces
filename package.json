@@ -9,7 +9,8 @@
   "scripts": {
     "test": "vitest",
     "start": "node dist/cli",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0",

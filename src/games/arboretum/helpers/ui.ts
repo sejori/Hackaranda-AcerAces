@@ -108,31 +108,6 @@ export function nicePlayArea(
   if (out.length === 0) {
     return "";
   }
-  const borderCharacters = {
-    topBody: "",
-    topJoin: "",
-    topLeft: "",
-    topRight: "",
-
-    bottomBody: "",
-    bottomJoin: "",
-    bottomLeft: "",
-    bottomRight: "",
-
-    bodyLeft: "│",
-    bodyRight: "",
-    bodyJoin: "",
-    headerJoin: "",
-
-    joinBody: "",
-    joinLeft: "",
-    joinRight: "",
-    joinJoin: "",
-    joinMiddleDown: "",
-    joinMiddleUp: "",
-    joinMiddleLeft: "",
-    joinMiddleRight: "",
-  };
   return table(out, {
     border: getBorderCharacters("norc"),
     drawHorizontalLine: (i, l) => i === 0 || i === l,
