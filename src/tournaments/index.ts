@@ -8,8 +8,11 @@ import {
 } from "./types.js";
 import { type gameTitle } from "../games/index.js";
 import gameTypes from "../games/index.js";
-import { BotProcess, type identifier } from "../botHandler/index.js";
-import { PlayerProcess } from "../playerHandler/index.js";
+import {
+  BotProcess,
+  type identifier,
+} from "../turnHandlers/botHandler/index.js";
+import { PlayerProcess } from "../turnHandlers/playerHandler/index.js";
 import { knockout } from "./knockout/index.js";
 
 export async function createTournament(tournamentSettings: tournamentSettings) {

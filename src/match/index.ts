@@ -1,5 +1,8 @@
 import { confirm } from "@inquirer/prompts";
-import { BotProcess, type identifier } from "../botHandler/index.js";
+import {
+  BotProcess,
+  type identifier,
+} from "../turnHandlers/botHandler/index.js";
 import type { gameTitle } from "../games/index.js";
 import { default as defaultTypes } from "../games/index.js";
 import type { winner } from "../games/types.js";

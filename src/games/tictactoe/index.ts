@@ -1,5 +1,5 @@
 import type { gameInterface, winner } from "../types.js";
-import type { identifier } from "../../botHandler/index.js";
+import type { identifier } from "../../turnHandlers/botHandler/index.js";
 import { confirm } from "@inquirer/prompts";
 import { table } from "table";
 
@@ -132,18 +132,32 @@ function displayForUser(
 
 function niceBoard(board: board) {
   const defaultBoard = [
-    ['      \n      \n  tl  \n      \n      \n      ', '      \n      \n  tm  \n      \n      \n      ', '      \n      \n  tr  \n      \n      \n      '], 
-    ['      \n      \n  ml  \n      \n      \n      ', '      \n      \n  mm  \n      \n      \n      ', '      \n      \n  mr  \n      \n      \n      '], 
-    ['      \n      \n  bl  \n      \n      \n      ', '      \n      \n  bm  \n      \n      \n      ', '      \n      \n  br  \n      \n      \n      '], 
+    [
+      "      \n      \n  tl  \n      \n      \n      ",
+      "      \n      \n  tm  \n      \n      \n      ",
+      "      \n      \n  tr  \n      \n      \n      ",
+    ],
+    [
+      "      \n      \n  ml  \n      \n      \n      ",
+      "      \n      \n  mm  \n      \n      \n      ",
+      "      \n      \n  mr  \n      \n      \n      ",
+    ],
+    [
+      "      \n      \n  bl  \n      \n      \n      ",
+      "      \n      \n  bm  \n      \n      \n      ",
+      "      \n      \n  br  \n      \n      \n      ",
+    ],
   ];
-  for (let i = 0; i < 3; i ++) {
+  for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
-      const currentToken = board[3*i + j];
-      if (currentToken == 'X') {
-        (defaultBoard[i] as string[])[j] = 'X    X\n X  X \n  XX  \n  XX  \n X  X \nX    X';
+      const currentToken = board[3 * i + j];
+      if (currentToken == "X") {
+        (defaultBoard[i] as string[])[j] =
+          "X    X\n X  X \n  XX  \n  XX  \n X  X \nX    X";
       }
-      if (currentToken == 'O') {
-        (defaultBoard[i] as string[])[j] = '  00  \n 0  0 \n0    0\n0    0\n 0  0 \n  00  ';
+      if (currentToken == "O") {
+        (defaultBoard[i] as string[])[j] =
+          "  00  \n 0  0 \n0    0\n0    0\n 0  0 \n  00  ";
       }
     }
   }

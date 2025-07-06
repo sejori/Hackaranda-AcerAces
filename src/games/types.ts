@@ -1,5 +1,5 @@
 import type { UUID } from "node:crypto";
-import type { identifier } from "../botHandler/index.js";
+import type { identifier } from "../turnHandlers/botHandler/index.js";
 import type { botDetail } from "../tournaments/types.js";
 
 /** player */

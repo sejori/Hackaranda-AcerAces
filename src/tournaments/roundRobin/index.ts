@@ -1,5 +1,8 @@
 import { playBestOf, type bestOfResults } from "../../bestOf/index.js";
-import { BotProcess, type identifier } from "../../botHandler/index.js";
+import {
+  BotProcess,
+  type identifier,
+} from "../../turnHandlers/botHandler/index.js";
 import type { gameTitle } from "../../games/index.js";
 import { table as printTable } from "table";
 import { botsFromBotDetail } from "../index.js";

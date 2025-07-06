@@ -4,13 +4,12 @@ import { spawn } from "child_process";
 import chalk from "chalk";
 import { allGameTitles, type gameTitle } from "../../games/index.js";
 import type { botDetail } from "../../tournaments/types.js";
-import { confirm } from "@inquirer/prompts";
-import { checkDockerActive, dockerActiveChoice } from "../helpers/docker.js";
+import { dockerActiveChoice } from "../helpers/docker.js";
 
 export async function setup() {
   // Docker bots
   const dockerBotsURL = path.join(
-    import.meta.dirname + "../../../../src/botHandler/bots",
+    import.meta.dirname + "../../../../src/turnHandlers/botHandler/bots",
   );
   const choice = await dockerActiveChoice();
   if (!choice) {

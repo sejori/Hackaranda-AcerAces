@@ -1,5 +1,5 @@
-import type { identifier } from "../../../botHandler/index.js";
-import type { gameState, pathScore, winMetaData, path } from "../types.js";
+import type { identifier } from "../../../turnHandlers/botHandler/index.js";
+import type { gameState, winMetaData } from "../types.js";
 import type { winner } from "../../types.js";
 import { extractFromPlayArea, niceDeck, nicePlayArea } from "../helpers/ui.js";
 

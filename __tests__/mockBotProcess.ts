@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { BotProcess } from "../src/botHandler";
+import { BotProcess } from "../src/turnHandlers/botHandler";
 
 export function getBotProcessMock(imageName: string, identifier: string) {
   return {

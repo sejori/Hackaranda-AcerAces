@@ -1,4 +1,7 @@
-import { BotProcess, type identifier } from "../botHandler/index.js";
+import {
+  BotProcess,
+  type identifier,
+} from "../turnHandlers/botHandler/index.js";
 import type { gameTitle } from "../games/index.js";
 import gameTypes from "../games/index.js";
 import { playMatch } from "../match/index.js";

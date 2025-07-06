@@ -1,4 +1,4 @@
-import type { identifier } from "../botHandler/index.js";
+import type { identifier } from "../turnHandlers/botHandler/index.js";
 import type { gameTitle } from "../games/index.ts";
 import type { ObjectValues } from "../helpers/objectValues.ts";
 export type botDetail = {

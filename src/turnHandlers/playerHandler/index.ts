@@ -1,6 +1,6 @@
 import { input } from "@inquirer/prompts";
-import type { gameTitle } from "../games/index.js";
-import gameTypes from "../games/index.js";
+import type { gameTitle } from "../../games/index.js";
+import gameTypes from "../../games/index.js";
 
 export type identifier = string;
 
