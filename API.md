@@ -83,7 +83,7 @@ left of the board (index `0`). If the incoming messageID was `'1234-5678-9101'`,
 ``` json
 {
     "move": 0,
-    "messageID": '1234-5678-9101'
+    "messageID": "1234-5678-9101"
 }
 ```
 
