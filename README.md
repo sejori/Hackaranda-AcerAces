@@ -80,5 +80,6 @@ The menu options are similar to 'Begin Best Of' but with some changes.
     - Choose File
         - Tournament results can be used as seeding, they are stored in `./tournamentResults`
 
+# API
 
-
+See the API documentation here: [API](API.md)
