@@ -243,12 +243,12 @@ We can now decide to play a card from our hand. Looking at `state.hand` we get `
 and looking at `state.playArea` we can see the cards we have already played:
 ```json
 {
-    0: {
-        0: ["J", 4],
+    "0": {
+        "0": ["J", 4],
     }
-    1: {
-        0: ["J", 5],
-        1: ["A", 2]
+    "1": {
+        "0": ["J", 5],
+        "1": ["A", 2]
     }
 }
 ```
