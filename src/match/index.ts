@@ -33,10 +33,30 @@ export async function playMatch(
       const [currentPlayer, nextPlayer] =
         gameState.currentPlayer === 0 ? [botA, botB] : [botB, botA];
 
-      const currentGameState = gameType.getActivePlayerState(gameState);
+      const currentGameState = gameType.getActivePlayerState(
+        process.env.DEBUG
+          ? {
+              ...gameState,
+              playBack:
+                currentPlayer.imageName === "player"
+                  ? true
+                  : gameState.playBack,
+            }
+          : gameState,
+      );
       currentGameState.opponent = nextPlayer.identifier;
 
-      const otherGameState = gameType.getInactivePlayerState(gameState);
+      const otherGameState = gameType.getInactivePlayerState(
+        process.env.DEBUG
+          ? {
+              ...gameState,
+              playBack:
+                currentPlayer.imageName === "player"
+                  ? true
+                  : gameState.playBack,
+            }
+          : gameState,
+      );
       otherGameState.opponent = currentPlayer.identifier;
 
       const otherMove = nextPlayer.send(otherGameState);

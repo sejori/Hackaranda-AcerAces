@@ -4,7 +4,6 @@ import {
   subTurn,
   type gameState,
   type move,
-  type opponentHand,
   type playerState,
 } from "../types.js";
 
