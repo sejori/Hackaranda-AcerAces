@@ -1,0 +1,7 @@
+[
+	{
+		"dockerId": "arboretum-python-llm-test",
+		"identifier": "LBR GPT",
+    "path": "./python/LLM_randomMessage"
+	}
+]
