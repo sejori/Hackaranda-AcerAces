@@ -1,6 +1,20 @@
 # Bots
 
-## Individual Bots
+## Creating a Bot
+To create a bot, you must create a Console Application that satisfies the [API](./API.md).
+It is recommended to create the bot as a separate project, but feel free to reference or even use the
+default bots (`/src/defaultBots/...`) as a starting point.
+The bot must be a docker image, you can build individually using the following command:
+`docker build -t {image name} {bot directory}`
+where: 
+- `{image name}` is the name of the image (referencing your docker hub details if you have them)
+- `{bot directory}` is the directory that contains the `DockerFile`
+
+For the final tournament, we will collect all bots either through docker hub, or by github and we will
+build them manually.
+
+
+## Registering Bots
 Bots for a particular `game` are registered under `/bots/{game}/`, using a JSON format:
 ```json
 {
