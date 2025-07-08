@@ -9,8 +9,9 @@ import { dockerActiveChoice } from "../helpers/docker.js";
 export async function setup() {
   // Docker bots
   const dockerBotsURL = path.join(
-    import.meta.dirname + "../../../../src/turnHandlers/botHandler/bots",
+    import.meta.dirname + "../../../../src/defaultBots",
   );
+  const defaultBotsURL = path.join(import.meta.dirname + "../../../../bots");
   const choice = await dockerActiveChoice();
   if (!choice) {
     return;
@@ -21,7 +22,7 @@ export async function setup() {
     tictactoe: [],
   };
   for (let game of allGameTitles) {
-    const failed = await buildBots(dockerBotsURL, game);
+    const failed = await buildBots(dockerBotsURL, defaultBotsURL, game);
     failures[game] = failed;
     console.log("");
   }
@@ -40,9 +41,13 @@ export async function setup() {
   }
 }
 
-async function buildBots(dockerBotsURL: string, game: string) {
+async function buildBots(
+  dockerBotsURL: string,
+  defaultBotsURL: string,
+  game: string,
+) {
   console.log("Building", game, "bots");
-  const gameURL = path.join(dockerBotsURL, game, "bots.json");
+  const gameURL = path.join(defaultBotsURL, game, "defaultBots.json");
   const f = await readFile(gameURL);
   const bots = JSON.parse(f.toString());
   const failedBuilds = [];
@@ -64,6 +69,7 @@ async function buildBots(dockerBotsURL: string, game: string) {
       }
     } catch (e) {
       failedBuilds.push(bot);
+      console.log(e);
       console.log(chalk.red("-- Error"));
     }
   }

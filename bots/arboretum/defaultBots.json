@@ -16,7 +16,7 @@
 	},
 	{
 		"dockerId": "arboretum-random-priority-bot",
-		"identifier": "Random Priority",
+		"identifier": "Discard Priority",
     "variables": ["priority=12345678"],
     "path": "./js/randomPriority"
 	},

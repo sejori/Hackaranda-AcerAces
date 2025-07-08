@@ -82,4 +82,4 @@ The menu options are similar to 'Begin Best Of' but with some changes.
 
 # API
 
-See the API documentation here: [API](API.md)
+See the API documentation here: [API](/docs/API.md)
