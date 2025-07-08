@@ -23,6 +23,7 @@
     "chalk": "^5.4.1",
     "cliui": "^9.0.1",
     "figlet": "^1.8.1",
+    "filenamify": "^6.0.0",
     "inquirer-file-selector": "^0.6.2",
     "inquirer-select-pro": "^1.0.0-alpha.9",
     "table": "^6.9.0"

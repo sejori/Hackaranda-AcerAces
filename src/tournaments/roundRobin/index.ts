@@ -11,6 +11,7 @@ import cliui from "cliui";
 import readline from "readline";
 import type { botDetail } from "../types.js";
 import path from "path";
+import filenamify from "filenamify";
 const ui = cliui();
 
 type table = Record<identifier, record>;
@@ -320,7 +321,7 @@ async function saveResults(
     import.meta.dirname,
     "../../../tournamentResults",
     gameTitle,
-    tournamentName + ".json",
+    filenamify(tournamentName) + ".json",
   );
   await writeFile(tournamentResultsFile, jsonRows);
 }
