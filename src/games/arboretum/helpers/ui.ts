@@ -64,6 +64,9 @@ export function colorForSpecies(species: species) {
   return chalk.hex(hexColour ?? "#FFFFFF");
 }
 export function assignColour(card: string) {
+  if (process.env.NOCOLOUR) {
+    return card;
+  }
   const species = card[0];
   if (species === undefined) {
     return "";
@@ -190,9 +193,13 @@ export function nicePlayAreaArr(
 }
 
 function niceCard(card: Card) {
-  const colour = colorForSpecies(card[0]);
-  const species = colour(card[0]);
-  const rank = colour(card[1]);
+  let species = card[0] as string;
+  let rank = `${card[1]}`;
+  if (process.env.NOCOLOUR === undefined) {
+    const colour = colorForSpecies(card[0]);
+    species = colour(card[0]);
+    rank = colour(card[1]);
+  }
   // const data = [
   //   [rank, " ", rank],
   //   [" ", " ", " "],
