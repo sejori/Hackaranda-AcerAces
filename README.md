@@ -1,5 +1,24 @@
 # Hackaranda
 
+## Table of Contents
+### Setup and basic functionality
+- [Setup](#setup)
+- [Start](#start)
+- [Quit](#quit)
+- [Begin Best Of](#begin-best-of)
+- [Tournaments](#tournaments)  
+### [API](docs/API.md)
+- [General API](docs/API.md#general-api)
+- [TicTacToe API](docs/API.md#tictactoe)
+- [Arboretum API](docs/API.md#arboretum)
+### [Bots](docs/Bots.md)
+- [Creating a Bot](docs/Bots.md#creating-a-bot)
+- [Registering Bots](docs/Bots.md#registering-bots)
+- [Groups of Bots](docs/Bots.md#groups-of-bots)
+- [Default Bots](docs/Bots.md#default-bots)
+    - [Tictactoe](docs/default/Tictactoe.md)
+    - [Arboretum](docs/default/Arboretum.md)
+
 ## Setup
 
 Install node: [https://nodejs.org/en/download/current]
@@ -83,3 +102,8 @@ The menu options are similar to 'Begin Best Of' but with some changes.
 # API
 
 See the API documentation here: [API](/docs/API.md)
+
+
+# Bots
+
+See the Bots documentation here: [API](/docs/Bots.md)
