@@ -6,7 +6,8 @@
 
 # General API
 
-Bots will interact through the console.
+Bots will interact through the console (or STDIN and STDOUT see [wiki](https://en.wikipedia.org/wiki/Standard_streams)).
+- In most cases, the bot will choose a move by 'printing' to the console, and will receive a move by 'reading from' the console.
 
 ## Server to Bot
 
