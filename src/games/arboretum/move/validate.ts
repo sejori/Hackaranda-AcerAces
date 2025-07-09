@@ -7,6 +7,7 @@ import { getCurrentPlayArea } from "../helpers/getPlayArea.js";
 import {
   drawingMove,
   subTurn,
+  type coord,
   type discardMove,
   type gameState,
   type move,
@@ -43,12 +44,6 @@ function validatePlayMove(state: gameState, move: playMove) {
   if (move.coord == undefined || move.card == undefined) {
     return false;
   }
-  const [x, y] = move.coord;
-  const currentCard = playArea[x]?.[y];
-  if (currentCard !== undefined) {
-    console.log("current card is not undefined", { move, playArea });
-    return false;
-  }
 
   const hand = getCurrentHand(state);
   const cardToPlay = move.card;
@@ -58,8 +53,36 @@ function validatePlayMove(state: gameState, move: playMove) {
   );
   if (!cardInHand) {
     console.log("Card not in hand");
+    return false;
   }
-  return cardInHand;
+
+  // check card adjacent to another card
+  const [x, y] = move.coord;
+  const currentCard = playArea[x]?.[y];
+  if (currentCard !== undefined) {
+    console.log("current card is not undefined", { move, playArea });
+    return false;
+  }
+
+  if (playArea[0]?.[0] === undefined) {
+    return true;
+  }
+
+  const adjacents: coord[] = [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+  ];
+  for (let direction of adjacents) {
+    const targetCoord: coord = [x + direction[0], y + direction[1]];
+    const adjacentCard = playArea[targetCoord[0]]?.[targetCoord[1]];
+    if (adjacentCard !== undefined) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function validateDiscardMove(state: gameState, move: discardMove) {

@@ -13,6 +13,7 @@ import {
   type discardMove,
   type gameState,
   type move,
+  type playArea,
   type playMove,
 } from "../types.js";
 
@@ -67,11 +68,15 @@ function applySecondDrawMove(state: gameState, move: drawingMove) {
 
 function applyPlayMove(state: gameState, move: playMove) {
   const playArea = getCurrentPlayArea(state);
-  const [x, y] = move.coord;
+  let [x, y] = move.coord;
+  if (playArea[0]?.[0] === undefined) {
+    x = 0;
+    y = 0;
+  }
   let col = playArea[x];
   if (col === undefined) {
     playArea[x] = {};
-    col = playArea[x];
+    col = playArea[x] as Record<number, Card>;
   }
   col[y] = move.card;
 
