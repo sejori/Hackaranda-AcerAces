@@ -24,7 +24,7 @@ npm run build
 
 ## Start
 
-Note: On first start, select the `Build Default Bots` option  .
+Note: On first start, select the `Build Default Bots` option. Once built, you will need to start again.
 
 To start the CLI, enter the following command: 
 ```

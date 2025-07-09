@@ -19,7 +19,7 @@ The server will write game state to a bot's console (stdin) as JSON in the form:
 
 The line will be followed by a new line character `\n` signalling the end of the message.
 
-Every `state` will contain the following:
+Every `state` will contain the following as well as game specific information:
 ``` js
 {
     // Signifies if it is the bot's turn - if it is not you MUST send back a random move
@@ -41,6 +41,7 @@ At the start of a game, the server will send a `NEWGAME` message through state. 
 ```json
 {
     "message": "NEWGAME",
+    // The game number within a best of i.e. game 3 out of 100
     "gameNumber": "number",
     "round": "string"
 }
@@ -116,7 +117,7 @@ Where:
 
 ## TicTacToe Move
 
-For tictactoe, the move is simply the index (integer 0 <= x <= 8) of where to place the current token.
+For tictactoe, the move is simply the index (integer `0 <= x <= 8`) of where to place the current token.
 - For example, to place the current token in the middle (index `5`), the move will be `5`.
 
 # Arboretum
@@ -156,15 +157,15 @@ Where:
 - `Card` is an array/tuple of the form `[species, rank]` e.g. `["J", 3]`.
 - `hand` is your hand. It's an array of cards: `Card[]`.
 - `opponentHand` is your opponent's hand. It's an array of cards or null: `(Card | null)[]`.
-    - Arboretum keeps track of which cards you know your opponent has in their. These will be shown
-    as `Card`, the other will be `null`.
+    - Arboretum keeps track of which cards you know your opponent has in their hand. These will be shown
+    as `Card`, the others will be `null`.
 - `discard` is your discard pile. It's an array of cards: `Card[]` 
     - `discard` acts as a stack - last in first out
 - `opponentDiscard` is your opponent's discard pile. It's an array of cards: `Card[]` 
     - `opponentDiscard` acts as a stack - last in first out
 - `playArea` is an object/dict/hashmap that represents the coordinates of each card in a playArea/Arboretum.
     - The first layer is the `x` coordinate, the second layer is the `y` coordinate. The TS type is 
-    `Record<number, Record<number, Card>>`
+    `Record<number, Record<number, Card>>`. The pydantic type would be `Dict[int, Dict[int, Card]]`.
         - Note: to be valid, the coordinate must be adjacent to another card.
     - An example where `["J", 3]` is at coordinate `(-1, 0)`, `["C", 4]` is at `(-1, 1)` and `["J", 2]`
     is at `(0, 0)`:
@@ -226,19 +227,19 @@ with a default move (say `0`) to maintain activity. E.g.
 IN => `{"messageID": "1234", "state": {"deck": 32, "hand": [["J", 3], ...] ..., "activeTurn": false }}`
 OUT => `{"move": 0, "messageID": "1234"}`
 
-### First draw
+### First draw - Subturn = 0
 It's now our turn, we must choose where to draw from. We can look in `"state"` to view the cards in 
 both discards (`state.discard` and `state.opponentDiscard`) and decide whether to draw from our 
 discard, `EthanBot`'s discard, or the deck. Let's draw from `EthanBot`'s discard which is `2`.
 IN => `{"messageID": "asdf", "state": {"deck": 30, "hand": [["J", 3], ...], "subTurn": 0, ..., "activeTurn": true }}`
 OUT => `{"move": 2, "messageID": "asdf"}`
 
-### Second draw
+### Second draw - Subturn = 1
 Like the first draw, we must choose where to draw from. This time let's draw from the deck.
 IN => `{"messageID": "9392", "state": {"deck": 29, "hand": [["C", 4], ...], "subTurn": 1, .., "activeTurn": true }}`
 OUT => `{"move": 0, "messageID": "9392"}`
 
-### Play move
+### Play move - Subturn = 2
 We can now decide to play a card from our hand. Looking at `state.hand` we get `[["C", 4], ["J", 3],...]`, 
 and looking at `state.playArea` we can see the cards we have already played:
 ```json
@@ -257,10 +258,10 @@ of `["J", 4]`. To do this we must choose `["J", 3]` from our hand and the chosen
 IN => `{"messageID": "5123", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 2 ..., "activeTurn": true }}`
 OUT => `{"move": {"card": ["J", 3], "coord": [-1, 0]}, "messageID": "5123"}`
 
-### Discard move
+### Discard move - Subturn = 3
 Now that we've played a card, we must discard a card from our hand. We are not using any `"O"` cards
 so we can safely discard the card `["O", 3]`.
-IN => `{"messageID": "8124", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 2 ..., "activeTurn": true }}`
+IN => `{"messageID": "8124", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 3 ..., "activeTurn": true }}`
 OUT => `{"move": ["O", 3], "messageID": "8124"}`
 
 

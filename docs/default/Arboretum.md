@@ -30,7 +30,7 @@ A bot that is random except it will always draw from the deck when possible.
 A bot that is random except it will always draw from its discard pile when possible.
 
 ## Draw Opponent
-A bot that is random except it will always draw from its opponent's discard pile when possible.
+A bot that is random except it will always draw from the opponent's discard pile when possible.
 
 ## Draw Most Common
 A bot that is random except it will try and draw a card of the same species as is most common in its
@@ -77,8 +77,9 @@ To calculate which cards are spare, the bot calculates the following for each sp
 
 The bot then loops through every card in hand and calculates 
 `handScore - opponentHandScore - remainingScore - rank` where `rank` is the rank of the current card.
-If this is positive then the card can is considered spare and is given priority `1`. If the card is 
-a `7` it is given priority `0.5`.
+If this is positive then the card is considered spare and is given priority `1`. If the card is 
+a `7` it is given priority `0.5`. (My intuition says that `7` cards are the most valuable, this may 
+be incorrect.)
 
 Otherwise, if `opponentScore` is currently `0`, the card is not currently risky and is given priority
 `0.6`.
@@ -93,7 +94,7 @@ Note: there are many more opportunities here for improvement, for example:
 - Calculating which of the remaining cards are locked into a playArea or buried too far in a discard 
 and hence shouldn't be included in `remainingScore`.
 - Calculating how each card could affect each player's playArea score.
-- An alternate priority system based in the mechanics of the game.
+- An alternate priority system, fine tuned to the mechanics of the game.
 - Some sort of min-max algorithm.
 - AI?
 
