@@ -164,6 +164,31 @@ export async function beginTournament() {
     });
   }
 
+  let continueMethod: "enter" | "timed" | number = 0;
+  if (userPlayer === USERPLAYER["don't play"]) {
+    continueMethod = await select({
+      message: "Select continue type:",
+      choices: [
+        {
+          value: "enter",
+          name: "Progress on ENTER",
+        },
+        {
+          value: "timed",
+          name: "After a time",
+        },
+      ],
+    });
+    if (continueMethod === "timed") {
+      continueMethod = await number({
+        message: "Choose move time:",
+        min: 0,
+        required: true,
+        default: 0,
+      });
+    }
+  }
+
   const tournamentSettings: tournamentSettings = {
     numberOfPlayers,
     gameType,
@@ -178,6 +203,7 @@ export async function beginTournament() {
     userName,
     seeding,
     seedingDir,
+    continueMethod,
   };
   await createTournament(tournamentSettings);
   process.exit();

@@ -12,6 +12,9 @@ import readline from "readline";
 import type { botDetail } from "../types.js";
 import path from "path";
 import filenamify from "filenamify";
+import { confirm } from "@inquirer/prompts";
+import { setTimeout } from "timers/promises";
+import { continueMethodHandler } from "../../helpers/continueMethod.js";
 const ui = cliui();
 
 type table = Record<identifier, record>;
@@ -34,6 +37,7 @@ export async function roundRobin(
   gameTitle: gameTitle,
   tournamentName: string,
   bestOf: number,
+  continueMethod: "enter" | number,
   moveTimeout = 100,
   alternatePlayer1 = true,
   log = false,
@@ -65,6 +69,9 @@ export async function roundRobin(
       readline.cursorTo(process.stdout, 0, 0);
       readline.clearScreenDown(process.stdout);
       process.stdout.write(ui.toString());
+    }
+    if (i > 0) {
+      await continueMethodHandler(continueMethod);
     }
     let round = rounds[i] as number[][];
     let resolvers: Promise<unknown>[] = [];

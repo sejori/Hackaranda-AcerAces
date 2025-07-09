@@ -123,6 +123,7 @@ export async function beginBestOf() {
     userName,
     seeding: "random",
     seedingDir: "",
+    continueMethod: 0,
   };
   await createTournament(tournamentSettings);
   process.exit();

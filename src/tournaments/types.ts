@@ -23,6 +23,7 @@ export type tournamentSettings = {
   tournamentName: string;
   seeding: seeding;
   seedingDir: string;
+  continueMethod: "enter" | number;
 };
 
 export const TOURNAMENT_TYPE = {

@@ -7,6 +7,7 @@ import type { gameTitle } from "../../games/index.js";
 import { getBorderCharacters, table as printTable } from "table";
 import v8 from "v8";
 import { botsFromBotDetail } from "../index.js";
+import { continueMethodHandler } from "../../helpers/continueMethod.js";
 export type botDetail = {
   dockerId: string;
   identifier: identifier;
@@ -29,6 +30,7 @@ export async function knockout(
   gameTitle: gameTitle,
   seeding: identifier[],
   bestOf: number,
+  continueMethod: "enter" | number,
   moveTimeout = 100,
   alternatePlayer1 = true,
   log = false,
@@ -103,6 +105,7 @@ export async function knockout(
     if (newSeeding.length > 1) {
       matchups = knockoutMatchups(newSeeding);
     }
+    await continueMethodHandler(continueMethod);
   }
   showSymmetricalTable(roundResults, 5);
   console.log("Max heap usage", maxHeapUsage);
