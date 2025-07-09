@@ -1,6 +1,8 @@
-[General API](#general-api)
-[TicTacToe API](#tictactoe)
-[Arboretum API](#arboretum)
+# API
+
+[General API](#general-api)  
+[TicTacToe API](#tictactoe)  
+[Arboretum API](#arboretum)  
 
 # General API
 
@@ -223,20 +225,20 @@ Our bot is playing a game against `EthanBot`.
 
 ### Out of turn
 It is `EthanBot`'s turn at the moment so each message has the `activeTurn: false`. We simply respond
-with a default move (say `0`) to maintain activity. E.g.
-IN => `{"messageID": "1234", "state": {"deck": 32, "hand": [["J", 3], ...] ..., "activeTurn": false }}`
+with a default move (say `0`) to maintain activity. E.g.  
+IN => `{"messageID": "1234", "state": {"deck": 32, "hand": [["J", 3], ...] ..., "activeTurn": false }}`  
 OUT => `{"move": 0, "messageID": "1234"}`
 
 ### First draw - Subturn = 0
 It's now our turn, we must choose where to draw from. We can look in `"state"` to view the cards in 
 both discards (`state.discard` and `state.opponentDiscard`) and decide whether to draw from our 
-discard, `EthanBot`'s discard, or the deck. Let's draw from `EthanBot`'s discard which is `2`.
-IN => `{"messageID": "asdf", "state": {"deck": 30, "hand": [["J", 3], ...], "subTurn": 0, ..., "activeTurn": true }}`
+discard, `EthanBot`'s discard, or the deck. Let's draw from `EthanBot`'s discard which is `2`.  
+IN => `{"messageID": "asdf", "state": {"deck": 30, "hand": [["J", 3], ...], "subTurn": 0, ..., "activeTurn": true }}`  
 OUT => `{"move": 2, "messageID": "asdf"}`
 
 ### Second draw - Subturn = 1
-Like the first draw, we must choose where to draw from. This time let's draw from the deck.
-IN => `{"messageID": "9392", "state": {"deck": 29, "hand": [["C", 4], ...], "subTurn": 1, .., "activeTurn": true }}`
+Like the first draw, we must choose where to draw from. This time let's draw from the deck.  
+IN => `{"messageID": "9392", "state": {"deck": 29, "hand": [["C", 4], ...], "subTurn": 1, .., "activeTurn": true }}`  
 OUT => `{"move": 0, "messageID": "9392"}`
 
 ### Play move - Subturn = 2
@@ -254,14 +256,14 @@ and looking at `state.playArea` we can see the cards we have already played:
 }
 ```
 Looking at this, it makes sense to extend our `"J"` path by placing our card `["J", 3]` to the left 
-of `["J", 4]`. To do this we must choose `["J", 3]` from our hand and the chosen coordinate: `[-1, 0]`.
-IN => `{"messageID": "5123", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 2 ..., "activeTurn": true }}`
+of `["J", 4]`. To do this we must choose `["J", 3]` from our hand and the chosen coordinate: `[-1, 0]`.  
+IN => `{"messageID": "5123", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 2 ..., "activeTurn": true }}`  
 OUT => `{"move": {"card": ["J", 3], "coord": [-1, 0]}, "messageID": "5123"}`
 
 ### Discard move - Subturn = 3
 Now that we've played a card, we must discard a card from our hand. We are not using any `"O"` cards
-so we can safely discard the card `["O", 3]`.
-IN => `{"messageID": "8124", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 3 ..., "activeTurn": true }}`
+so we can safely discard the card `["O", 3]`.  
+IN => `{"messageID": "8124", "state": {"deck": 28, "hand": [["C", 4], ["J", 3], ...], "subTurn": 3 ..., "activeTurn": true }}`  
 OUT => `{"move": ["O", 3], "messageID": "8124"}`
 
 
