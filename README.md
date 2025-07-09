@@ -106,4 +106,4 @@ See the API documentation here: [API](/docs/API.md)
 
 # Bots
 
-See the Bots documentation here: [API](/docs/Bots.md)
+See the Bots documentation here: [Bots](/docs/Bots.md)
