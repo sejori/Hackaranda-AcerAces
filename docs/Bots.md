@@ -47,7 +47,6 @@ You can also add bots to existing groups by appending them to the json array.
 Note: It may be useful to use a JSON checker to validate the json files if there are any issues.
 
 ## Default Bots
-Default bots are located in `src/defaultBots/`
-[Tictactoe Default Bots](/docs/default/Tictactoe.md)
-
-[Arboretum Default Bots](/docs/default/Arboretum.md)
+Default bots are located in `src/defaultBots/`  
+- [Tictactoe Default Bots](/docs/default/Tictactoe.md)  
+- [Arboretum Default Bots](/docs/default/Arboretum.md)  
