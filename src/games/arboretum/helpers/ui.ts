@@ -54,8 +54,8 @@ export function fancyDeck(deck: Deck | opponentHand, joiner = " ") {
 const colourMap: Record<species, string> = {
   C: "#FFFF00",
   J: "#800080",
-  R: "#FFA500",
-  M: "#FF0000",
+  R: "#FF0000",
+  M: "#FFA500",
   O: "8B4513",
   W: "006400",
 };
