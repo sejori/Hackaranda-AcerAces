@@ -12,8 +12,6 @@ import readline from "readline";
 import type { botDetail } from "../types.js";
 import path from "path";
 import filenamify from "filenamify";
-import { confirm } from "@inquirer/prompts";
-import { setTimeout } from "timers/promises";
 import { continueMethodHandler } from "../../helpers/continueMethod.js";
 const ui = cliui();
 
@@ -51,6 +49,15 @@ export async function roundRobin(
   );
   let table = generateTable(identifiers);
   let rounds = roundRobinMatchups(identifiers.length);
+  let prevResults: [
+    identifier,
+    number,
+    number,
+    number,
+    number,
+    number,
+    identifier,
+  ][] = [];
   for (let i = 0; i < rounds.length; i++) {
     ui.resetOutput();
     ui.div({ text: `----- Round ${i + 1} -----` });
@@ -61,8 +68,27 @@ export async function roundRobin(
           "table failed",
         options: {},
       },
-      { text: "Other stuff" },
+      {
+        text: prevResults.length
+          ? printTable(
+              prevResults.slice(0, 10).map((res) => {
+                return [
+                  res[0],
+                  `${res[1]} - (draws ${res[3]}) - ${res[5]}`,
+                  res[res.length - 1],
+                ];
+              }),
+              {
+                header: {
+                  content: "Matchups",
+                },
+              },
+            )
+          : "",
+      },
     );
+
+    prevResults = [];
     // tableLog && console.log(ui.toString());
     // Clear previous line(s) and overwrite
     if (tableLog) {
@@ -100,11 +126,20 @@ export async function roundRobin(
             log,
           ),
           table,
+          prevResults,
           tableLog,
         ),
       );
     }
     await Promise.all(resolvers);
+
+    const ranks = getRanks(identifiers, table);
+    prevResults.sort((a, b) => {
+      return (
+        Math.min(ranks[a[0]] ?? Infinity, ranks[a[6]] ?? Infinity) -
+        Math.min(ranks[b[0]] ?? Infinity, ranks[b[6]] ?? Infinity)
+      );
+    });
   }
   console.clear();
   console.log(showTable(table, identifiers));
@@ -138,6 +173,15 @@ async function updateTable(
   botBIdentifier: identifier,
   match: Promise<bestOfResults>,
   table: table,
+  prevResults: [
+    identifier,
+    number,
+    number,
+    number,
+    number,
+    number,
+    identifier,
+  ][],
   log = false,
 ) {
   let { results, timeouts, scores } = await match;
@@ -147,10 +191,15 @@ async function updateTable(
   const games = aResults + bResults + draws;
   let aTable = table[botAIdentifier] as unknown as record;
   let bTable = table[botBIdentifier] as unknown as record;
-  false &&
-    console.log(
-      `${botAIdentifier} ${aResults} (${scores[botAIdentifier]}) - (draws ${draws}) - (${scores[botBIdentifier]}) ${bResults} ${botBIdentifier}`,
-    );
+  prevResults.push([
+    botAIdentifier,
+    aResults,
+    scores[botAIdentifier] as number,
+    draws,
+    scores[botBIdentifier] as number,
+    bResults,
+    botBIdentifier,
+  ]);
   aTable.timeouts += timeouts[botAIdentifier] ?? 0;
   bTable.timeouts += timeouts[botBIdentifier] ?? 0;
   aTable.scoreFor += scores[botAIdentifier] ?? 0;
@@ -181,6 +230,33 @@ async function updateTable(
   bTable.gWins += bResults;
   bTable.gDraws += draws;
   bTable.gLosses += aResults;
+}
+
+function getRanks(identifiers: identifier[], table: table) {
+  const out: Record<identifier, number> = {};
+  let rows = [];
+  for (let identifier of identifiers) {
+    let record = table[identifier];
+    if (record == undefined) {
+      return out;
+    }
+    rows.push({ identifier, record });
+  }
+  rows.sort((rowa, rowb) => {
+    const pointsDifference = rowb.record.points - rowa.record.points;
+    if (pointsDifference !== 0) return pointsDifference;
+    const recordDifference =
+      rowb.record.gWins -
+      rowb.record.gLosses -
+      rowa.record.gWins +
+      rowa.record.gLosses;
+    return recordDifference;
+  });
+  for (let i = 0; i < rows.length; i++) {
+    const identifier = rows[i]?.identifier as string;
+    out[identifier] = i;
+  }
+  return out;
 }
 
 function roundRobinMatchups(matchups: number) {

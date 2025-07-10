@@ -125,7 +125,9 @@ export function showScore(
               table(
                 [
                   [result],
-                  [`${botAIdentifier} ${aScore} - ${bScore} ${botBIdentifier}`],
+                  [
+                    `${botAIdentifier} (${aScore} - ${bScore}) ${botBIdentifier}`,
+                  ],
                 ],
                 {
                   columnDefault: {

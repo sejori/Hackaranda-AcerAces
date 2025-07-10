@@ -1,0 +1,13 @@
+
+[
+	{
+		"dockerId": "arboretum-decent-bot",
+		"identifier": "Decent 2",
+    "path": "./js/decent"
+	},
+	{
+		"dockerId": "arboretum-decent-bot",
+		"identifier": "Decent 1",
+    "path": "./js/decent"
+	}
+]
