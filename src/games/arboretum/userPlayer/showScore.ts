@@ -31,7 +31,7 @@ export function showScore(
   });
 
   const headers = [
-    "Trees",
+    "Species",
     "",
     botAIdentifier + "\n",
     "",
@@ -91,6 +91,7 @@ export function showScore(
 
     tableRows.push(row);
   }
+  tableRows.push(["Totals", "", aScore, "", "", "", bScore, "", ""]);
 
   const finalStateRows = [
     ["Player", "Final Hand", "Final Arboretum", "Final Score"],
@@ -108,16 +109,44 @@ export function showScore(
     ],
   ];
 
+  let result = "It is a draw!";
+  if (aScore > bScore) {
+    result = `${botAIdentifier} wins!`;
+  } else if (bScore > aScore) {
+    result = `${botBIdentifier} wins!`;
+  }
+
   ui.div(
     {
-      text: table(finalStateRows, {
-        header: {
-          content: "RESULTS\n",
-        },
-        drawHorizontalLine: (lineIndex, rowCount) => {
-          return lineIndex !== 1;
-        },
-      }),
+      text:
+        table([
+          [
+            "\n" +
+              table(
+                [
+                  [result],
+                  [`${botAIdentifier} ${aScore} - ${bScore} ${botBIdentifier}`],
+                ],
+                {
+                  columnDefault: {
+                    alignment: "center",
+                  },
+                  drawHorizontalLine: (lineIndex, rowCount) => {
+                    return lineIndex !== 1;
+                  },
+                },
+              ),
+          ],
+        ]) +
+        "\n\n" +
+        table(finalStateRows, {
+          header: {
+            content: "RESULTS\n",
+          },
+          drawHorizontalLine: (lineIndex, rowCount) => {
+            return lineIndex !== 1;
+          },
+        }),
       align: "center",
     },
     {
@@ -135,7 +164,9 @@ export function showScore(
         spanningCells: [
           { col: 0, row: 0, rowSpan: 2, verticalAlignment: "bottom" },
           { col: 2, row: 0, colSpan: 3, alignment: "center" },
+          { col: 2, row: 8, colSpan: 3, alignment: "left" },
           { col: 6, row: 0, colSpan: 3, alignment: "center" },
+          { col: 6, row: 8, colSpan: 3, alignment: "left" },
         ],
         drawHorizontalLine: (lineIndex, rowCount) => {
           return lineIndex !== 1 && lineIndex !== 2;
