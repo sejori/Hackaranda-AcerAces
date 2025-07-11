@@ -38,6 +38,7 @@ export class PlayBackProcess {
         this.round,
         this.continueMethod,
       );
+      console.log("showedPrevious Turn");
     }
     if (!gameState.activeTurn) {
       return;
@@ -57,15 +58,15 @@ export class PlayBackProcess {
         this.gameNumber,
         this.round,
       );
+      console.log("showed current Turn");
     }
     try {
       let move = this.moves[this.moveCount++];
-      if (this.identifier !== "1") {
+      if (!this.primary) {
         return move;
       }
       if (this.continueMethod === "enter") {
-        console.log({ continueMethod: this.continueMethod });
-        await confirm({ message: "continue?" });
+        await confirm({ message: "Continue?" });
       } else {
         await setTimeout(this.continueMethod);
       }
