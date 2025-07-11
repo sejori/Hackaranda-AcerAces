@@ -14,7 +14,6 @@ import path from "path";
 import filenamify from "filenamify";
 import { continueMethodHandler } from "../../helpers/continueMethod.js";
 import { saveOut, type tournamentOutState } from "../saveOut.js";
-const ui = cliui();
 
 type table = Record<identifier, record>;
 export type record = {
@@ -67,6 +66,7 @@ export async function roundRobin(
     identifier,
   ][] = [];
   for (let i = 0; i < rounds.length; i++) {
+    const ui = cliui();
     ui.resetOutput();
     ui.div({ text: `----- Round ${i + 1} -----` });
     ui.div(
