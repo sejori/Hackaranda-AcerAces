@@ -15,7 +15,6 @@ export async function saveOut(
   tournamentName: string,
   gameTitle: gameTitle,
   out: tournamentOutState,
-  knockout: boolean,
 ) {
   const tournamentResultsGameDir = path.join(
     import.meta.dirname,
@@ -31,9 +30,8 @@ export async function saveOut(
   const tournamentResults = {
     results: out.results,
     rounds: out.rounds,
+    matchups: {} as Record<`${string}-${string}`, number>,
   };
-  const tournamentResultsJSON = path.join(tournamentNameDir, "results.json");
-  await writeFile(tournamentResultsJSON, JSON.stringify(tournamentResults));
 
   const pad = (roundNumber: number) => {
     return String(roundNumber).padStart(String(out.rounds.length).length, "0");
@@ -50,6 +48,8 @@ export async function saveOut(
     }
     for (let matchup of out.rounds[i] ?? []) {
       const matchupDir = path.join(roundDir, `${matchup[0]}-${matchup[1]}`);
+      tournamentResults.matchups[`${matchup[0]}-${matchup[1]}`] = i;
+      tournamentResults.matchups[`${matchup[1]}-${matchup[0]}`] = i;
       await mkdir(matchupDir);
       const games = out.matchups[i]?.[matchup[0]];
       if (games === undefined) {
@@ -90,4 +90,6 @@ export async function saveOut(
       }
     }
   }
+  const tournamentResultsJSON = path.join(tournamentNameDir, "results.json");
+  await writeFile(tournamentResultsJSON, JSON.stringify(tournamentResults));
 }
