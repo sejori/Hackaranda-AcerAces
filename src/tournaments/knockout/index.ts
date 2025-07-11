@@ -8,6 +8,7 @@ import { getBorderCharacters, table as printTable } from "table";
 import v8 from "v8";
 import { botsFromBotDetail } from "../index.js";
 import { continueMethodHandler } from "../../helpers/continueMethod.js";
+import { saveOut, type tournamentOutState } from "../saveOut.js";
 export type botDetail = {
   dockerId: string;
   identifier: identifier;
@@ -28,6 +29,7 @@ type record = {
 export async function knockout(
   botDetails: botDetail[],
   gameTitle: gameTitle,
+  tournamentName: string,
   seeding: identifier[],
   bestOf: number,
   continueMethod: "enter" | number,
@@ -39,6 +41,11 @@ export async function knockout(
   let maxHeapUsage = 0;
   // previous: 77.7 % 100 x 50
   // failed at 100 x 100 around round 60
+  const outState: tournamentOutState = {
+    results: [],
+    rounds: [],
+    matchups: [],
+  };
   let [bots, identifiers] = botsFromBotDetail(
     botDetails,
     gameTitle,
@@ -60,6 +67,8 @@ export async function knockout(
 
       let botA = bots[botAIdentifier] as BotProcess;
       let botB = bots[botBIdentifier] as BotProcess;
+      outState.matchups.push({});
+      outState.rounds.push([]);
       let roundName = "";
       if (i == 0) {
         roundName = "Final";
@@ -88,6 +97,8 @@ export async function knockout(
             alternatePlayer1,
             log,
           ),
+          outState,
+          i,
           table,
           tableLog,
         ),
@@ -106,6 +117,34 @@ export async function knockout(
       matchups = knockoutMatchups(newSeeding);
     }
     await continueMethodHandler(continueMethod);
+  }
+  outState.results =
+    roundResults[roundResults.length - 1]?.map((round) => {
+      let defaultRecord = {
+        rWins: 0,
+        rDraws: 0,
+        rLosses: 0,
+        rounds: 0,
+        games: 0,
+        gWins: 0,
+        gDraws: 0,
+        gLosses: 0,
+        points: 0,
+        timeouts: 0,
+        scoreFor: 0,
+        scoreAgainst: 0,
+      };
+      if (round[1] > round[3]) {
+        return { identifier: round[0], record: defaultRecord, rank: 1 };
+      } else if (round[1] < round[3]) {
+        return { identifier: round[2], record: defaultRecord, rank: 1 };
+      }
+      return { identifier: round[2], record: defaultRecord, rank: 1 };
+    }) ?? [];
+
+  if (process.env.SAVE) {
+    await saveOut(tournamentName, gameTitle, outState);
+  } else {
   }
   showSymmetricalTable(roundResults, 5);
   console.log("Max heap usage", maxHeapUsage);
@@ -151,10 +190,21 @@ async function getNewMatchup(
   botAIdentifier: identifier,
   botBIdentifier: identifier,
   match: Promise<bestOfResults>,
+  tournamentState: tournamentOutState,
+  roundNumber: number,
   table: table,
   log = false,
 ): Promise<[identifier, number, identifier, number]> {
-  let { results, timeouts } = await match;
+  let bestOfResults = await match;
+  let { results, timeouts, scores } = bestOfResults;
+  if (process.env.SAVE) {
+    tournamentState.rounds[roundNumber]?.push([botAIdentifier, botBIdentifier]);
+    const roundMatchups = tournamentState.matchups[roundNumber];
+    if (roundMatchups === undefined) {
+      throw new Error("round matchups undefined");
+    }
+    roundMatchups[botAIdentifier] = bestOfResults;
+  }
   let aResults = results[botAIdentifier] as unknown as number;
   let bResults = results[botBIdentifier] as unknown as number;
   let draws = results.draws as number;

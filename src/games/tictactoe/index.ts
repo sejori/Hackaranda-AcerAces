@@ -2,6 +2,7 @@ import type { gameInterface, winner } from "../types.js";
 import type { identifier } from "../../turnHandlers/botHandler/index.js";
 import { confirm } from "@inquirer/prompts";
 import { table } from "table";
+import { setTimeout } from "timers/promises";
 
 type tile = "-" | "O" | "X";
 type gameState = {
@@ -236,13 +237,21 @@ function postGameMessage(
   };
 }
 
-async function showPreviousTurn(gameState: playerState<number>) {
+async function showPreviousTurn(
+  gameState: playerState<number>,
+  identifier: identifier,
+  gameNumber: number,
+  round: string,
+  continueMethod: "enter" | number,
+) {
   console.clear();
   console.log("Opponent played: ", gameState.previousTurn);
   console.log(gameState.gameState);
-  await confirm({
-    message: "Continue?",
-  });
+  if (continueMethod === "enter") {
+    await confirm({ message: "Continue?" });
+  } else {
+    await setTimeout(continueMethod);
+  }
 }
 
 export const tictactoe: gameInterface<

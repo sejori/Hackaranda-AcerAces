@@ -9,6 +9,14 @@ import type { winner } from "../games/types.js";
 import path from "path";
 import { writeFile } from "fs/promises";
 
+export type matchHistory = {
+  game: gameTitle;
+  players: [identifier, identifier];
+  initialState: any;
+  moves: any[];
+  winner: winner<any>;
+};
+
 export async function playMatch(
   botA: BotProcess,
   botB: BotProcess,
@@ -96,22 +104,23 @@ export async function playMatch(
     }
     scoreA += winner.scoreA;
     scoreB += winner.scoreB;
-    process.env.write_output &&
-      writeOutputToFile(
-        output,
-        [botA.identifier, botB.identifier],
-        gameTitle,
-        winner,
-      );
   } catch (error) {
     console.error(error);
     log && console.error(error);
   } finally {
+    const out = {
+      game: gameTitle,
+      players: [botA.identifier, botB.identifier],
+      initialState: output[0],
+      moves: output.slice(1),
+      winner,
+    } as matchHistory;
     return {
       result: winner.result,
       scores: [scoreA, scoreB],
       timeouts,
       gameState,
+      matchHistory: out,
     };
   }
 }

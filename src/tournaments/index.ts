@@ -119,6 +119,7 @@ export async function createKnockoutTournament(
   await knockout(
     botDetails,
     tournamentSettings.gameType,
+    tournamentSettings.tournamentName,
     botDetails.map((detail) => detail.identifier),
     bestof,
     tournamentSettings.continueMethod,

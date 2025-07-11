@@ -80,3 +80,10 @@ export class PlayBackProcess {
 
   kill() {}
 }
+process.on("uncaughtException", (error) => {
+  if (error instanceof Error && error.name === "ExitPromptError") {
+  } else {
+    // Rethrow unknown errors
+    throw error;
+  }
+});

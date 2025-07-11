@@ -4,7 +4,7 @@ import {
 } from "../turnHandlers/botHandler/index.js";
 import type { gameTitle } from "../games/index.js";
 import gameTypes from "../games/index.js";
-import { playMatch } from "../match/index.js";
+import { playMatch, type matchHistory } from "../match/index.js";
 
 export type results = {
   [botIdentifier: identifier]: number;
@@ -18,6 +18,7 @@ export type bestOfResults = {
   results: results;
   timeouts: timeouts;
   scores: scores;
+  bestOfHistory: matchHistory[];
 };
 
 export async function playBestOf(
@@ -33,6 +34,7 @@ export async function playBestOf(
   log && console.log("Beginning bestOf", bestOf, "id", id);
   let gameType = gameTypes[gameTitle];
 
+  const bestOfHistory = [];
   let results = {
     [botA.identifier]: 0,
     [botB.identifier]: 0,
@@ -55,13 +57,9 @@ export async function playBestOf(
       await botA.send(newGameMessage);
       await botB.send(newGameMessage);
 
-      const { result, timeouts, scores, gameState } = await playMatch(
-        botA,
-        botB,
-        i,
-        gameTitle,
-        log,
-      );
+      const { result, timeouts, scores, gameState, matchHistory } =
+        await playMatch(botA, botB, i, gameTitle, log);
+      bestOfHistory.push(matchHistory);
       const [scoreA, scoreB] = scores;
       if (scoreA === undefined || scoreB === undefined) {
         throw new Error();
@@ -109,6 +107,11 @@ export async function playBestOf(
           (results[botA.identifier] as number) +
           results.draws,
       );
-    return { results, timeouts: totalTimeouts, scores: totalScores };
+    return {
+      results,
+      timeouts: totalTimeouts,
+      scores: totalScores,
+      bestOfHistory,
+    };
   }
 }
