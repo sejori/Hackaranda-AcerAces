@@ -18,6 +18,8 @@
 - [Default Bots](docs/Bots.md#default-bots)
     - [Tictactoe](docs/default/Tictactoe.md)
     - [Arboretum](docs/default/Arboretum.md)
+### [Playback](docs/Playback.md)
+- [Save directory structure](docs/Playback.md#save-directory-structure)
 
 ## Setup
 

@@ -15,6 +15,7 @@ export async function saveOut(
   tournamentName: string,
   gameTitle: gameTitle,
   out: tournamentOutState,
+  knockout: boolean,
 ) {
   const tournamentResultsGameDir = path.join(
     import.meta.dirname,
@@ -55,7 +56,7 @@ export async function saveOut(
         break;
       }
 
-      const matchupResultsPath = path.join(matchupDir, "results.json");
+      const matchupResultsPath = path.join(matchupDir, "matchupResults.json");
       const gameResults = [];
       for (let game of games.bestOfHistory) {
         gameResults.push({
