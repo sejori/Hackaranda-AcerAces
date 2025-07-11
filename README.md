@@ -122,8 +122,8 @@ Environment Variables can unlock some additional functionality. The method of us
 - `$key=value; npm start` for powershell
     - This enables the variable for the process, and hence for all following commands.
 ## DEBUG
-- Setting `DEBUG` to true enables you to see both hands when playing against a bot.
+- Setting `DEBUG` to `true` enables you to see both hands when playing against a bot.
 
 ## NOCOLOUR
-- Setting `NOCOLOUR` to true disables the `chalk` module, and hence any colours.
+- Setting `NOCOLOUR` to `true` disables the `chalk` module, and hence any colours.
     - Use if there are any issues with cards blending into backgrounds.
