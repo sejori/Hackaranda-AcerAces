@@ -1,4 +1,4 @@
-import { input, number, select } from "@inquirer/prompts";
+import { confirm, input, number, select } from "@inquirer/prompts";
 import gameTypes from "../../games/index.js";
 import fileSelector from "inquirer-file-selector";
 import { readFile } from "node:fs/promises";
@@ -109,6 +109,11 @@ export async function beginBestOf() {
     });
   }
 
+  let save = await confirm({
+    message: "Save all matches?",
+    default: false,
+  });
+
   const tournamentSettings: tournamentSettings = {
     numberOfPlayers: 2,
     gameType,
@@ -124,6 +129,7 @@ export async function beginBestOf() {
     seeding: "random",
     seedingDir: "",
     continueMethod: 0,
+    save,
   };
   await createTournament(tournamentSettings);
   process.exit();

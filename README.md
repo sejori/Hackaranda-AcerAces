@@ -79,6 +79,8 @@ Note: In 'Begin Best Of', only the first 2 selected players will play
     - play: 
         - Enter a name/user identifier
     - don't play
+7. Save?
+    - All matches will be saved to the tournamentResults directory.
 
 ## Tournaments
 Play a tournament by selecting 'Begin Tournament'.

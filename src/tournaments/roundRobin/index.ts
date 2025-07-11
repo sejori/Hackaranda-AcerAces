@@ -38,6 +38,7 @@ export async function roundRobin(
   tournamentName: string,
   bestOf: number,
   continueMethod: "enter" | number,
+  save: boolean,
   moveTimeout = 100,
   alternatePlayer1 = true,
   log = false,
@@ -134,6 +135,7 @@ export async function roundRobin(
             alternatePlayer1,
             log,
           ),
+          save,
           table,
           prevResults,
           outState,
@@ -155,7 +157,7 @@ export async function roundRobin(
   console.clear();
   console.log(showTable(table, identifiers));
   outState.results = tableToRows(identifiers, table);
-  if (process.env.SAVE) {
+  if (save) {
     await saveOut(tournamentName, gameTitle, outState);
   } else {
     await saveResults(table, identifiers, tournamentName, gameTitle);
@@ -188,6 +190,7 @@ async function updateTable(
   botAIdentifier: identifier,
   botBIdentifier: identifier,
   match: Promise<bestOfResults>,
+  save: boolean,
   table: table,
   prevResults: [
     identifier,
@@ -204,7 +207,7 @@ async function updateTable(
 ) {
   let bestOfResults = await match;
   let { results, timeouts, scores } = bestOfResults;
-  if (process.env.SAVE) {
+  if (save) {
     tournamentState.rounds[roundNumber]?.push([botAIdentifier, botBIdentifier]);
     const roundMatchups = tournamentState.matchups[roundNumber];
     if (roundMatchups === undefined) {

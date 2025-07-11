@@ -24,6 +24,7 @@ export type tournamentSettings = {
   seeding: seeding;
   seedingDir: string;
   continueMethod: "enter" | number;
+  save: boolean;
 };
 
 export const TOURNAMENT_TYPE = {

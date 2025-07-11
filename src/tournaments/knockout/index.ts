@@ -33,6 +33,7 @@ export async function knockout(
   seeding: identifier[],
   bestOf: number,
   continueMethod: "enter" | number,
+  save: boolean,
   moveTimeout = 100,
   alternatePlayer1 = true,
   log = false,
@@ -99,6 +100,7 @@ export async function knockout(
           ),
           outState,
           i,
+          save,
           table,
           tableLog,
         ),
@@ -142,7 +144,7 @@ export async function knockout(
       return { identifier: round[2], record: defaultRecord, rank: 1 };
     }) ?? [];
 
-  if (process.env.SAVE) {
+  if (save) {
     await saveOut(tournamentName, gameTitle, outState);
   } else {
   }
@@ -192,12 +194,13 @@ async function getNewMatchup(
   match: Promise<bestOfResults>,
   tournamentState: tournamentOutState,
   roundNumber: number,
+  save: boolean,
   table: table,
   log = false,
 ): Promise<[identifier, number, identifier, number]> {
   let bestOfResults = await match;
   let { results, timeouts, scores } = bestOfResults;
-  if (process.env.SAVE) {
+  if (save) {
     tournamentState.rounds[roundNumber]?.push([botAIdentifier, botBIdentifier]);
     const roundMatchups = tournamentState.matchups[roundNumber];
     if (roundMatchups === undefined) {
