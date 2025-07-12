@@ -1,6 +1,10 @@
 
 [
     {
+		"dockerId": "acer-aces-modular-strategic-spiteful",
+		"identifier": "AcerAces S"
+	},
+    {
 		"dockerId": "acer-aces-modular-sp",
 		"identifier": "AcerAces Modular SP"
 	},
@@ -11,13 +15,5 @@
 	{
 		"dockerId": "arboretum-decent-bot",
 		"identifier": "Decent"
-	},
-    {
-		"dockerId": "arboretum-busy-bot",
-		"identifier": "Busy"
-	},
-	{
-		"dockerId": "arboretum-random-bot",
-		"identifier": "Random"
 	}
 ]

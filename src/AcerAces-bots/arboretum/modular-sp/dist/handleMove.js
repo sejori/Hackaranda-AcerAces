@@ -2,7 +2,7 @@ import { subTurn } from './types.js';
 import { activeStrategies, adaptStrategies } from './strategies.js';
 export function handleMove(state) {
     // Adapt strategies based on game state (optional)
-    adaptStrategies(state);
+    // adaptStrategies(state);
     switch (state.subTurn) {
         case subTurn.FirstDraw:
         case subTurn.SecondDraw:

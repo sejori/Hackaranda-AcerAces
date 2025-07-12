@@ -5,11 +5,12 @@ import { greedyPlay } from './playStrategies/greedyPlay.js';
 import { strategicPlay } from './playStrategies/strategicPlay.js';
 import { safeDiscard } from './discardStrategies/safeDiscard.js';
 import { strategicDiscard } from './discardStrategies/strategicDiscard.js';
+import { spitefulDiscard } from './discardStrategies/spitefulDiscard.js';
 // Active strategies configuration
 export let activeStrategies = {
     draw: strategicDraw,
     play: strategicPlay,
-    discard: strategicDiscard
+    discard: spitefulDiscard
 };
 // Strategy setter function
 export function setStrategies(newStrategies) {
@@ -53,10 +54,10 @@ export function adaptStrategies(state) {
     }
     // Determine game phase
     const cardsPlayed = Object.keys(state.playArea).length;
-    if (cardsPlayed < 3) {
+    if (cardsPlayed < 6) {
         state.memory.gamePhase = 'early';
     }
-    else if (cardsPlayed < 8) {
+    else if (cardsPlayed < 10) {
         state.memory.gamePhase = 'mid';
     }
     else {
