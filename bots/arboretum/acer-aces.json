@@ -1,0 +1,19 @@
+
+[
+	{
+		"dockerId": "acer-aces-strategic-pacifist",
+		"identifier": "AcerAces Strategic Pacifist"
+	},
+	{
+		"dockerId": "arboretum-decent-bot",
+		"identifier": "Decent"
+	},
+    {
+		"dockerId": "arboretum-busy-bot",
+		"identifier": "Busy"
+	},
+	{
+		"dockerId": "arboretum-random-bot",
+		"identifier": "Random"
+	}
+]
