@@ -12,7 +12,7 @@ import {
 } from "../../tournaments/types.js";
 import type { tournamentSettings } from "../../tournaments/types.js";
 import { validateAPIKeyList } from "../../helpers/validateAPIKeyList.js";
-import { validateSeedingList } from "../../helpers/validateSeedingList.js";
+import { validateSeedingFile } from "../../helpers/validateSeedingFile.js";
 import { validatePlayerList } from "../../helpers/validatePlayerList.js";
 import { createTournament } from "../../tournaments/index.js";
 import { select as multiSelect } from "inquirer-select-pro";
@@ -133,7 +133,7 @@ export async function beginTournament() {
               gameType,
             ),
           });
-          validFile = await validateSeedingFile(seedingDir);
+          validFile = await validateSeeding(seedingDir);
         } catch (e) {
           break;
         }
@@ -243,7 +243,7 @@ const userPlayer = Object.keys(USERPLAYER);
 const userPlayerOptions = mapIntoChoices(userPlayer);
 
 const validateCredentialFile = validateFile(validateAPIKeyList);
-const validateSeedingFile = validateFile(validateSeedingList);
+const validateSeeding = validateDataFile(validateSeedingFile);
 const validatePlayerFile = validateFile(validatePlayerList);
 
 function validateFile(validator: (list: any[]) => boolean) {
@@ -267,6 +267,23 @@ function validateFile(validator: (list: any[]) => boolean) {
   };
 }
 
+function validateDataFile(validator: (matchData: any) => boolean) {
+  return async (fileDir: string) => {
+    try {
+      let contents = await readFile(fileDir);
+      let unvalidatedMatchData = JSON.parse(contents.toString());
+      let result = validator(unvalidatedMatchData);
+      if (!result) {
+        console.log("Invalid file");
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
+}
 const tournamentID = ["GenerateRandomID", "SelectID"];
 type tournamentIDOptions = "GenerateRandomID" | "SelectID";
 const tournamentIDOptions = mapIntoChoices(tournamentID);

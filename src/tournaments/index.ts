@@ -78,7 +78,7 @@ export async function createKnockoutTournament(
   if (tournamentSettings.seeding === SEEDING.fromFile) {
     let contents = await readFile(tournamentSettings.seedingDir);
     let seedingFile = JSON.parse(contents.toString());
-    for (let player of seedingFile) {
+    for (let player of seedingFile.results) {
       seeding[player.identifier] = player.rank;
     }
   }
