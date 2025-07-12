@@ -14,7 +14,7 @@ export class BotProcess {
     public imageName: string,
     public identifier: string,
     private timeout: number,
-    private variables?: string[],
+    private variables?: string[]
   ) {
     // TODO: Have a 'ready' message
     const envVariables = [];
@@ -43,7 +43,7 @@ export class BotProcess {
   send(gameState: any) {
     return new Promise((resolve: resolver) => {
       const message = wrapState(gameState);
-      // console.log(message);
+      // console.log(JSON.stringify(message));
       this.messageMap.set(message.messageID, resolve);
       this.timeOutMessage(message.messageID, this.timeout);
       this.proc.stdin.write(JSON.stringify(message) + "\n");
