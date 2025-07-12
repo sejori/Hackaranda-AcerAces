@@ -1,7 +1,11 @@
 
 [
-	{
-		"dockerId": "acer-aces-strategic-pacifist",
+    {
+		"dockerId": "acer-aces-modular-sp",
+		"identifier": "AcerAces Modular SP"
+	},
+    {
+		"dockerId": "acer-aces-strategic-pacifist:v2",
 		"identifier": "AcerAces Strategic Pacifist"
 	},
 	{

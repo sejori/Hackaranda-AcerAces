@@ -4,7 +4,7 @@ import { activeStrategies, adaptStrategies } from './strategies.js';
 
 export function handleMove(state: playerState<move>): move {
 	// Adapt strategies based on game state (optional)
-	adaptStrategies(state);
+	// adaptStrategies(state);
 	
 	switch (state.subTurn) {
 		case subTurn.FirstDraw:
