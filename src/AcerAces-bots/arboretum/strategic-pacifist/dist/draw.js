@@ -5,8 +5,8 @@ export function drawMove(state) {
     if (shouldAccelerateGame(state) && state.deck > 0) {
         return drawingMove.Deck; // Draw from deck to end game faster
     }
-    // Strategy #2: Access hand for potential high-scoring trees
-    const handAnalysis = analyzeHand(state.hand);
+    // Strategy #2: Access hand for potential high-scoring trees (enhanced with play area)
+    const handAnalysis = analyzeHand(state.hand, state.playArea);
     const mostCommonSpecies = getMostCommonSpecies(state.hand);
     // Look for cards of our most common species in discard piles
     if (state.discard.length > 0) {

@@ -1,4 +1,4 @@
-import { categorizeCards, getAllEmptySpaces, placeCardInPlayArea, scorePlayArea, SPECIES } from './helpers.js';
+import { categorizeCards, getAllEmptySpaces, placeCardInPlayArea, scorePlayArea, SPECIES, canBuildRainbowStaircase, getStaircaseTargets, findStaircaseCard, findStaircaseCardHigh } from './helpers.js';
 export function playMove(state) {
     // Strategy #1: Build initial mixed structure
     if (state.playArea[0]?.[0] === undefined) {
@@ -7,6 +7,11 @@ export function playMove(state) {
         // Prefer middle-ranked cards for initial placement
         const sortedCards = playCards.sort((a, b) => Math.abs(a[1] - 4.5) - Math.abs(b[1] - 4.5));
         return { card: sortedCards[0], coord: [0, 0] };
+    }
+    // NEW: Try rainbow staircase approach first
+    const staircaseMove = tryRainbowStaircase(state);
+    if (staircaseMove) {
+        return staircaseMove;
     }
     // Strategy #3: Use categorized cards
     const { playCards, saveCards } = categorizeCards(state.hand, state.opponentHand, state.playArea);
@@ -41,6 +46,43 @@ export function playMove(state) {
         }
     }
     return { card: bestCard, coord: bestCoord };
+}
+// Try to build rainbow staircase (inspired by decent bot)
+function tryRainbowStaircase(state) {
+    if (!canBuildRainbowStaircase(state.playArea)) {
+        return null;
+    }
+    const { lowTarget, highTarget, lowCoord, highCoord } = getStaircaseTargets(state.playArea);
+    // Don't extend too far beyond 1-8 range
+    if (lowTarget < 1 && highTarget > 8) {
+        return null;
+    }
+    const { playCards, saveCards } = categorizeCards(state.hand, state.opponentHand, state.playArea);
+    const availableCards = playCards.length > 0 ? playCards : saveCards;
+    if (availableCards.length === 0) {
+        return null;
+    }
+    // Try to extend the low end
+    if (lowTarget >= 1 && lowCoord) {
+        // Check if the target coordinate is actually empty
+        if (state.playArea[lowCoord[0]]?.[lowCoord[1]] === undefined) {
+            const lowCard = findStaircaseCard(availableCards, lowTarget);
+            if (lowCard && lowTarget - lowCard[1] <= 2) {
+                return { card: lowCard, coord: lowCoord };
+            }
+        }
+    }
+    // Try to extend the high end
+    if (highTarget <= 8 && highCoord) {
+        // Check if the target coordinate is actually empty
+        if (state.playArea[highCoord[0]]?.[highCoord[1]] === undefined) {
+            const highCard = findStaircaseCardHigh(availableCards, highTarget);
+            if (highCard && highCard[1] - highTarget <= 2) {
+                return { card: highCard, coord: highCoord };
+            }
+        }
+    }
+    return null;
 }
 // Calculate penalty for blocking potential single-species paths
 function calculateBlockingPenalty(playArea, placedCard, coord) {

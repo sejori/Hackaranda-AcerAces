@@ -1,6 +1,6 @@
 # Strategic Pacifist Bot - Strategy Implementation
 
-This bot implements a 6-process strategic approach to playing Arboretum, written in TypeScript.
+This bot implements a 6-process strategic approach to playing Arboretum, written in TypeScript, with additional enhancements inspired by the decent bot.
 
 ## Process 1: Build Initial Mixed Structure
 **Implementation**: `play.ts` - First Play Logic
@@ -9,16 +9,19 @@ This bot implements a 6-process strategic approach to playing Arboretum, written
 - Creates a foundation that doesn't commit to any single species
 
 ## Process 2: Access Hand for High-Scoring Potential
-**Implementation**: `helpers.ts` - `analyzeHand()` function
+**Implementation**: `helpers.ts` - `analyzeHand()` function (Enhanced)
 - Analyzes hand to identify species with highest scoring potential
-- Calculates total rank, presence of 1s and 8s for each species
+- **NEW**: Considers current play area when evaluating card value
+- **NEW**: Calculates potential score including consecutive rank bonuses
+- **NEW**: Tracks current play area score for each species
 - Used by both draw and discard strategies to make informed decisions
 
 ## Process 3: Categorize Cards (Save vs Play)
-**Implementation**: `helpers.ts` - `categorizeCards()` function
-- Sorts species by scoring potential
+**Implementation**: `helpers.ts` - `categorizeCards()` function (Enhanced)
+- Sorts species by enhanced potential score (considering play area)
 - Keeps top 2 species for saving (to earn right to score)
 - Balances save cards to avoid over-accumulation
+- **NEW**: Prioritizes playing cards of species already in play area
 - Prioritizes play cards for building paths
 
 ## Process 4: Handle 1/8 Interaction
@@ -40,14 +43,21 @@ This bot implements a 6-process strategic approach to playing Arboretum, written
 - Accelerates game by drawing from deck when ahead
 - Slows game by drawing from discards when behind
 
+## NEW: Process 7: Rainbow Staircase Foundation
+**Implementation**: `play.ts` - `tryRainbowStaircase()` function
+- **NEW**: Attempts to build a 1-8 ladder through the middle (inspired by decent bot)
+- **NEW**: Creates foundation for opportunistic chaining across species
+- **NEW**: Extends staircase at both low and high ends when beneficial
+- **NEW**: Falls back to original strategy when staircase approach isn't optimal
+
 ## File Structure
 
 ### TypeScript Source Files
 - `handleMove.ts` - Main entry point, routes to appropriate strategy
 - `draw.ts` - Implements processes 1, 2, and 6 for drawing decisions
-- `play.ts` - Implements processes 1, 3, and 5 for placement decisions  
+- `play.ts` - Implements processes 1, 3, 5, and 7 for placement decisions  
 - `discard.ts` - Implements processes 2, 3, and 4 for discard decisions
-- `helpers.ts` - Shared utility functions for all strategies
+- `helpers.ts` - Shared utility functions for all strategies (Enhanced)
 - `types.ts` - TypeScript type definitions
 - `readLine.ts` - Console I/O handling
 - `index.ts` - Application entry point
@@ -68,6 +78,9 @@ This bot implements a 6-process strategic approach to playing Arboretum, written
 - **Path Preservation**: Avoids blocking potential single-species paths
 - **Opponent Awareness**: Considers opponent's hand when making decisions
 - **Position Evaluation**: Calculates relative game strength for timing decisions
+- **NEW: Rainbow Staircase**: Systematic foundation building for multi-species paths
+- **NEW: Enhanced Hand Analysis**: Considers play area when evaluating card value
+- **NEW: Consecutive Rank Bonuses**: Rewards cards that can form consecutive sequences
 
 ## Development
 
@@ -82,4 +95,13 @@ npm run build
 npm start
 ```
 
-The bot combines these processes to create a balanced, strategic approach that adapts to the game state while maintaining long-term scoring potential, now with the added benefits of TypeScript's type safety and better development experience.
+## Recent Improvements
+
+### Version 2.0 Enhancements:
+1. **Rainbow Staircase Strategy**: Added systematic 1-8 ladder building inspired by the decent bot
+2. **Enhanced Hand Analysis**: Cards are now evaluated considering the current play area
+3. **Consecutive Rank Detection**: Bonus scoring for cards that can form consecutive sequences
+4. **Play Area Integration**: Hand categorization now considers existing play area development
+5. **Improved Path Building**: Better coordination between species focus and placement strategy
+
+The bot combines these processes to create a balanced, strategic approach that adapts to the game state while maintaining long-term scoring potential, now with the added benefits of TypeScript's type safety, systematic foundation building, and enhanced hand analysis.

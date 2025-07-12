@@ -19,8 +19,8 @@ export function discardMove(state: playerState<move>): discardMove {
 	// Prefer discarding from play cards over save cards
 	const discardCandidates = playCards.length > 0 ? playCards : saveCards;
 	
-	// Strategy #2: Analyze hand for scoring potential
-	const handAnalysis = analyzeHand(discardCandidates);
+	// Strategy #2: Analyze hand for scoring potential (enhanced with play area)
+	const handAnalysis = analyzeHand(discardCandidates, state.playArea);
 	
 	// Find the least valuable card to discard
 	let worstCard = discardCandidates[0]!;
