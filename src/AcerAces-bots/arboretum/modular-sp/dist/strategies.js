@@ -5,12 +5,11 @@ import { greedyPlay } from './playStrategies/greedyPlay.js';
 import { strategicPlay } from './playStrategies/strategicPlay.js';
 import { safeDiscard } from './discardStrategies/safeDiscard.js';
 import { strategicDiscard } from './discardStrategies/strategicDiscard.js';
-import { spitefulDiscard } from './discardStrategies/spitefulDiscard.js';
 // Active strategies configuration
 export let activeStrategies = {
     draw: strategicDraw,
     play: strategicPlay,
-    discard: spitefulDiscard
+    discard: strategicDiscard
 };
 // Strategy setter function
 export function setStrategies(newStrategies) {

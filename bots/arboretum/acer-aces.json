@@ -2,15 +2,7 @@
 [
     {
 		"dockerId": "acer-aces-modular-strategic-spiteful",
-		"identifier": "AcerAces S"
-	},
-    {
-		"dockerId": "acer-aces-modular-sp",
-		"identifier": "AcerAces Modular SP"
-	},
-    {
-		"dockerId": "acer-aces-strategic-pacifist:v2",
-		"identifier": "AcerAces Strategic Pacifist"
+		"identifier": "AcerAces SS"
 	},
 	{
 		"dockerId": "arboretum-decent-bot",

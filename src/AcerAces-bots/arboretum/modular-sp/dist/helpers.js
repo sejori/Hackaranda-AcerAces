@@ -225,4 +225,80 @@ export function getMostCommonSpecies(hand) {
     }
     return mostCommon;
 }
+// Rainbow staircase functions (inspired by decent bot)
+export function canBuildRainbowStaircase(playArea) {
+    // Check if we have a foundation to build on
+    return playArea[0]?.[0] !== undefined;
+}
+export function findStaircaseEnds(playArea) {
+    if (!canBuildRainbowStaircase(playArea)) {
+        return { lowestEnd: null, highestEnd: null };
+    }
+    let lowestCard = null;
+    let lowestCoord = null;
+    let highestCard = null;
+    let highestCoord = null;
+    // Find the lowest and highest cards in the staircase
+    for (const x of Object.keys(playArea)) {
+        const row = playArea[Number(x)];
+        for (const y of Object.keys(row)) {
+            const card = row[Number(y)];
+            if (!lowestCard || card[1] < lowestCard[1]) {
+                lowestCard = card;
+                lowestCoord = [Number(x), Number(y)];
+            }
+            if (!highestCard || card[1] > highestCard[1]) {
+                highestCard = card;
+                highestCoord = [Number(x), Number(y)];
+            }
+        }
+    }
+    return {
+        lowestEnd: lowestCard && lowestCoord ? [lowestCard, lowestCoord] : null,
+        highestEnd: highestCard && highestCoord ? [highestCard, highestCoord] : null
+    };
+}
+export function getStaircaseTargets(playArea) {
+    const { lowestEnd, highestEnd } = findStaircaseEnds(playArea);
+    if (!lowestEnd || !highestEnd) {
+        return { lowTarget: 1, highTarget: 8, lowCoord: null, highCoord: null };
+    }
+    const [lowestCard, lowCoord] = lowestEnd;
+    const [highestCard, highCoord] = highestEnd;
+    // Find adjacent empty coordinates for the lowest and highest cards
+    const lowAdjacent = findAdjacentEmptyCoord(playArea, lowCoord);
+    const highAdjacent = findAdjacentEmptyCoord(playArea, highCoord);
+    return {
+        lowTarget: lowestCard[1] - 1,
+        highTarget: highestCard[1] + 1,
+        lowCoord: lowAdjacent,
+        highCoord: highAdjacent
+    };
+}
+function findAdjacentEmptyCoord(playArea, cardCoord) {
+    const [x, y] = cardCoord;
+    const adjacentCoords = [
+        [x, y + 1], [x, y - 1], [x + 1, y], [x - 1, y]
+    ];
+    for (const [adjX, adjY] of adjacentCoords) {
+        if (playArea[adjX]?.[adjY] === undefined) {
+            return [adjX, adjY];
+        }
+    }
+    return null;
+}
+export function findStaircaseCard(hand, targetRank) {
+    // Find cards closest to the target rank
+    const candidates = hand
+        .filter(card => card[1] <= targetRank)
+        .sort((a, b) => targetRank - a[1] - (targetRank - b[1]));
+    return candidates.length > 0 ? candidates[0] : null;
+}
+export function findStaircaseCardHigh(hand, targetRank) {
+    // Find cards closest to the target rank (for high end)
+    const candidates = hand
+        .filter(card => card[1] >= targetRank)
+        .sort((a, b) => a[1] - targetRank - (b[1] - targetRank));
+    return candidates.length > 0 ? candidates[0] : null;
+}
 //# sourceMappingURL=helpers.js.map
