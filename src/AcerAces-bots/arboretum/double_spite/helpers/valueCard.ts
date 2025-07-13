@@ -33,8 +33,11 @@ function rankCard(card: Card, state: playerState<any>) {
       return 10;
     }
 
-    // If opponent played 8 in play area 1 just worth its rank
-    if (hasCardInPlayArea(state.opponentPlayArea, the8)) {
+    // If opponent/us played 8 in play area 1 just worth its rank
+    if (
+      hasCardInPlayArea(state.opponentPlayArea, the8) ||
+      hasCardInPlayArea(state.playArea, the8)
+    ) {
       return 1;
     }
 
