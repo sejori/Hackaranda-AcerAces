@@ -21,6 +21,7 @@
 ### [Playback](docs/Playback.md)
 - [Save directory structure](docs/Playback.md#save-directory-structure)
 ### [Environment Variables](#env-vars)
+- [TIMEOUT](#timeout)
 - [DEBUG](#debug)
 - [NOCOLOUR](#nocolour)
 
@@ -121,9 +122,14 @@ Environment Variables can unlock some additional functionality. The method of us
     - This enables the variable for this `npm start` command only and no following commands
 - `$key=value; npm start` for powershell
     - This enables the variable for the process, and hence for all following commands.
+## TIMEOUT
+- The `TIMEOUT` environment variable is preset when the bot is launched by the server.
+- It contains the timeout limit for each move. 
+
 ## DEBUG
 - Setting `DEBUG` to `true` enables you to see both hands when playing against a bot.
 
 ## NOCOLOUR
 - Setting `NOCOLOUR` to `true` disables the `chalk` module, and hence any colours.
     - Use if there are any issues with cards blending into backgrounds.
+
