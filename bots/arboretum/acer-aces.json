@@ -1,11 +1,43 @@
 
 [
-    {
+	{
+		"dockerId": "acer-aces-adapting-double-spite",
+		"identifier": "AcerAces Adapting Double Spite"
+	},
+	{
+		"dockerId": "acer-aces-double-spite",
+		"identifier": "AcerAces Double Spite"
+	},
+	{
 		"dockerId": "acer-aces-modular-strategic-spiteful",
 		"identifier": "AcerAces SS"
 	},
 	{
+		"dockerId": "acer-aces-modular-sp",
+		"identifier": "AcerAces Modular SP"
+	},
+	{
+		"dockerId": "acer-aces-strategic-pacifist:v2",
+		"identifier": "AcerAces Strategic Pacifist"
+	},
+	{
 		"dockerId": "arboretum-decent-bot",
 		"identifier": "Decent"
+	},
+    {
+		"dockerId": "arboretum-random-spare-cards-bot",
+		"identifier": "Random Spare Cards",
+    "path": "./js/randomSpareCards"
+	},
+	{
+		"dockerId": "arboretum-random-priority-bot",
+		"identifier": "Discard Priority",
+    "variables": ["priority=12345678"],
+    "path": "./js/randomPriority"
+	},
+	{
+		"dockerId": "arboretum-discard-rarest-bot",
+		"identifier": "Discard Rarest",
+    "path": "./js/discardRarestCard"
 	}
 ]
