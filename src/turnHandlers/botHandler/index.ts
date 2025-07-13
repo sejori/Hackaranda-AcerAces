@@ -17,7 +17,7 @@ export class BotProcess {
     private variables?: string[]
   ) {
     // TODO: Have a 'ready' message
-    const envVariables = [];
+    const envVariables = ["-e", `TIMEOUT=${timeout}`];
     if (variables !== undefined && variables.length > 0) {
       for (let variable of variables) {
         envVariables.push("-e");

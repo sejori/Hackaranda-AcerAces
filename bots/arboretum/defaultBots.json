@@ -4,7 +4,7 @@
 		"identifier": "Discard Lowest",
     "path": "./js/discardLowestCard"
 	},
-	{
+  {
 		"dockerId": "arboretum-decent-bot",
 		"identifier": "Decent",
     "path": "./js/decent"
@@ -14,11 +14,19 @@
 		"identifier": "Random Spare Cards",
     "path": "./js/randomSpareCards"
 	},
-	{
+  {
 		"dockerId": "arboretum-random-priority-bot",
 		"identifier": "Discard Priority",
     "variables": ["priority=12345678"],
     "path": "./js/randomPriority"
+	},
+  {
+		"dockerId": "mattsrdocker/acer-aces:spite",
+		"identifier": "Spite"
+	},
+  {
+		"dockerId": "mattsrdocker/acer-aces-modular-strategic-spiteful",
+		"identifier": "Strategic Spiteful"
 	},
 	{
 		"dockerId": "arboretum-discard-rarest-bot",
@@ -69,6 +77,10 @@
 		"dockerId": "arboretum-random-python",
 		"identifier": "Random (python)",
     "path": "./python/randomMessage"
+	},
+	{
+		"dockerId": "zebbo/arboretum:majestic_maple",
+		"identifier": "Majestic Maple"
 	},
 	{
 		"dockerId": "arboretum-random-csharp",

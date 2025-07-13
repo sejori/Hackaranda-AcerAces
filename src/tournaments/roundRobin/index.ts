@@ -429,7 +429,7 @@ async function saveResults(
     }
     row.rank = i + 1;
   }
-  const jsonRows = JSON.stringify(rows);
+  const jsonRows = JSON.stringify({results:rows});
   const tournamentResultsFile = path.join(
     import.meta.dirname,
     "../../../tournamentResults",

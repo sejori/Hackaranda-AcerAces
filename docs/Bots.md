@@ -6,7 +6,7 @@ It is recommended to create the bot as a separate project, but feel free to refe
 default bots (`/src/defaultBots/...`) as a starting point.
 
 The bot must be a docker image, you can build individually using the following command:
-`docker build -t {image name} --platform linux/arm64,linux/amd64,windows/amd64 {bot directory}`
+`docker build -t {image name} --platform linux/arm64,linux/amd64 {bot directory}`
 where: 
 - `{image name}` is the name of the image (referencing your docker hub details if you have them)
     - If you have docker hub details (we recommend making them for ease of sharing bots), your image name should be of the form `{dockerUsername}/{repository}:{botName}`
